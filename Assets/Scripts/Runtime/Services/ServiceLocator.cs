@@ -7,6 +7,7 @@ namespace Services
     public static class ServiceLocator
     {
         private static readonly Dictionary<Type, IService> _services = new();
+        public static Boolean IsDisposed => _services.Count == 0;
 
         public static TService Get<TService>()
         {
@@ -32,6 +33,7 @@ namespace Services
             {
                 service.Dispose();
             }
+
             _services.Clear();
         }
     }

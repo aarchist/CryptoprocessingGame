@@ -1,8 +1,8 @@
-﻿using Data.Video;
+﻿using System.IO;
+using Data.Video;
 using Services;
 using Services.Data.Core;
 using Services.FileSystem.Core;
-using Services.VideoRender.Core;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,11 +27,14 @@ namespace UI.Views.Admin.UploadedVideos
         {
             ServiceLocator.Get<IFileSystemService>().ChooseVideoFiles(filePaths =>
             {
-                var renderService = ServiceLocator.Get<IVideoRenderService>();
                 var data = ServiceLocator.Get<IDataService>().Get<UploadedVideosData>();
                 foreach (var filePath in filePaths)
                 {
-                    renderService.LoadVideo(filePath, videoData => data.Add(videoData));
+                    data.Add(new VideoData()
+                    {
+                        Path = filePath,
+                        Name = Path.GetFileName(filePath)
+                    });
                 }
             });
         }

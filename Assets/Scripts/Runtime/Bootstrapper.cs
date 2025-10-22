@@ -1,4 +1,6 @@
 using Services;
+using Services.Config;
+using Services.Config.Core;
 using Services.Data;
 using Services.Data.Core;
 using Services.Displays;
@@ -17,16 +19,20 @@ using UnityEngine;
 public sealed class Bootstrapper : MonoBehaviour
 {
     [SerializeField]
+    private ConfigService _configService;
+    [SerializeField]
     private UIViewService _uiViewService;
     [SerializeField]
     private LoopsService _loopsService;
 
     private void Awake()
     {
+        DontDestroyOnLoad(gameObject);
         ServiceLocator.Register<IVideoRenderService>(new VideoRenderService());
         ServiceLocator.Register<IFileSystemService>(new FileSystemService());
         ServiceLocator.Register<IDisplaysService>(new DisplaysService());
         ServiceLocator.Register<IDataService>(new DataService());
+        ServiceLocator.Register<IConfigService>(_configService);
         ServiceLocator.Register<IUIViewService>(_uiViewService);
         ServiceLocator.Register<ILoopsService>(_loopsService);
         ServiceLocator.Initialize();

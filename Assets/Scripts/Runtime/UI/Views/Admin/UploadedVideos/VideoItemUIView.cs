@@ -35,13 +35,13 @@ namespace UI.Views.Admin.UploadedVideos
         [SerializeField]
         private Image _pauseIconImage;
 
-        private VideoData _videoData;
-        private Action _onUpdate;
         private State _state;
 
         public event Action<VideoItemUIView> PlayClicked;
 
         public VideoPlayback Playback { get; private set; }
+
+        public VideoData VideoData { get; private set; }
 
         public State ActiveState
         {
@@ -51,11 +51,11 @@ namespace UI.Views.Admin.UploadedVideos
                 _state = value;
                 if (value == State.Stopped)
                 {
-                    _durationTextMeshProUGUI.text = $"{_videoData.Duration / 60:D2}:{_videoData.Duration % 60:D2}";
-                    _resolutionTextMeshProUGUI.text = $"[{_videoData.Resolution.x}x{_videoData.Resolution.y}]";
-                    _nameTextMeshProUGUI.text = _videoData.Name;
+                    _durationTextMeshProUGUI.text = $"{VideoData.Duration / 60:D2}:{VideoData.Duration % 60:D2}";
+                    _resolutionTextMeshProUGUI.text = $"[{VideoData.Resolution.x}x{VideoData.Resolution.y}]";
+                    _nameTextMeshProUGUI.text = VideoData.Name;
                     PlayIconEnabled = true;
-                    Progress = 0.0f;
+                    ShowedProgress = 0.0F;
                     Playback.Stop();
                     return;
                 }
@@ -77,7 +77,7 @@ namespace UI.Views.Admin.UploadedVideos
             }
         }
 
-        private Single Progress
+        private Single ShowedProgress
         {
             set
             {
@@ -85,6 +85,7 @@ namespace UI.Views.Admin.UploadedVideos
                 _progressImage.fillAmount = value;
             }
         }
+
         private Boolean PlayIconEnabled
         {
             set
@@ -96,8 +97,8 @@ namespace UI.Views.Admin.UploadedVideos
 
         public void Setup(VideoData videoData)
         {
-            _videoData = videoData;
-            ServiceLocator.Get<IVideoRenderService>().GetPlaybackOrCreateNew(videoData, playback =>
+            VideoData = videoData;
+            ServiceLocator.Get<IVideoRenderService>().GetPlayback(videoData, playback =>
             {
                 Playback = playback;
                 ActiveState = State.Stopped;
@@ -113,7 +114,7 @@ namespace UI.Views.Admin.UploadedVideos
 
         private void Update()
         {
-            if (_state is State.Played)
+            if ((_state is State.Played) && (Playback != null))
             {
                 ShowPlaybackProgress();
             }
@@ -128,25 +129,30 @@ namespace UI.Views.Admin.UploadedVideos
 
         private void ShowPlaybackProgress()
         {
-            _durationTextMeshProUGUI.text = $"{Playback.Time / 60:D2}:{Playback.Time % 60:D2} / {_videoData.Duration / 60:D2}:{_videoData.Duration % 60:D2}";
-            Progress = Playback.LoopProgress;
+            _durationTextMeshProUGUI.text = $"{Playback.Time / 60:D2}:{Playback.Time % 60:D2} / {VideoData.Duration / 60:D2}:{VideoData.Duration % 60:D2}";
+            ShowedProgress = Playback.LoopProgress;
         }
 
         private void ReplaceFile()
         {
-            ServiceLocator.Get<IFileSystemService>().ChooseVideoFile(videoPath => { ServiceLocator.Get<IVideoRenderService>().ReplaceVideo(videoPath, _videoData, () => ActiveState = State.Stopped); });
+            ServiceLocator.Get<IFileSystemService>().ChooseVideoFile(videoPath =>
+            {
+                var previousState = ActiveState;
+                ActiveState = State.Stopped;
+                ServiceLocator.Get<IVideoRenderService>().ReplaceVideo(videoPath, VideoData, () => ActiveState = previousState);
+            });
         }
 
         private void ShowConfirmation()
         {
             ServiceLocator.Get<IUIViewService>().Get<ConfirmationPopupUIView>()
-                .Setup("Are you sure?", $"Remove {_videoData.Name} video from uploaded list?", Delete)
+                .Setup("Are you sure?", $"Remove {VideoData.Name} video from uploaded list?", Delete)
                 .Show();
         }
 
         private void Delete()
         {
-            ServiceLocator.Get<IDataService>().Get<UploadedVideosData>().Remove(_videoData);
+            ServiceLocator.Get<IDataService>().Get<UploadedVideosData>().Remove(VideoData);
             Playback = null;
         }
 

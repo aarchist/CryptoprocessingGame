@@ -7,7 +7,9 @@ namespace Services.Displays
 {
     public sealed class DisplaysService : IDisplaysService
     {
-        private Boolean HasSecondsDisplay => Display.displays.Length < 2;
+        public Boolean IsSecondDisplayActive => HasSecondDisplay && SecondsDisplay.active;
+
+        private Boolean HasSecondDisplay => Display.displays.Length >= 2;
 
         private Display SecondsDisplay => Display.displays[1];
 
@@ -18,7 +20,7 @@ namespace Services.Displays
 
         private void CheckSecondDisplay()
         {
-            if (HasSecondsDisplay && !SecondsDisplay.active)
+            if (HasSecondDisplay && !SecondsDisplay.active)
             {
                 SecondsDisplay.Activate();
             }

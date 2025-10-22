@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using Data.Game;
+using Data.Reward;
 using Data.Video;
 using Services.Data.Core;
 using UnityEngine;
@@ -12,6 +14,8 @@ namespace Services.Data
         private readonly Dictionary<Type, String> _dataPaths = new()
         {
             [typeof(UploadedVideosData)] = "uploaded_videos",
+            [typeof(RewardsData)] = "rewards",
+            [typeof(GameData)] = "game_data",
         };
 
         public TData Get<TData>() where TData : IData, new()

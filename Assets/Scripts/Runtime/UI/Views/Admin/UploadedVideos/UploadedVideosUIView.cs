@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Data.Game;
 using Data.Video;
 using Services;
 using Services.Data.Core;
@@ -16,17 +17,25 @@ namespace UI.Views.Admin.UploadedVideos
         [SerializeField]
         private VideoItemUIView _videoItemUIViewPrefab;
         [SerializeField]
+        private GameObject _disconnectedDisplayIcon;
+        [SerializeField]
+        private GameObject _connectedDisplayIcon;
+        [SerializeField]
         private ScrollRect _scrollRect;
 
-        private VideoItemUIView _activeVideoItemUIView;
         private UploadedVideosData _uploadedVideosData;
+        private VideoItemUIView _activeVideoItemUIView;
+        private GameData _gameData;
 
         public override void Initialize()
         {
+            base.Initialize();
             foreach (var videoData in ServiceLocator.Get<IDataService>().Get<UploadedVideosData>().UploadedVideos)
             {
                 CreateItem(videoData);
             }
+
+            _gameData = ServiceLocator.Get<IDataService>().Get<GameData>();
         }
 
         private void OnEnable()
@@ -34,6 +43,29 @@ namespace UI.Views.Admin.UploadedVideos
             _uploadedVideosData = ServiceLocator.Get<IDataService>().Get<UploadedVideosData>();
             _uploadedVideosData.VideoRemoved += DestroyItem;
             _uploadedVideosData.VideoAdded += CreateItem;
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(_gameData.StartGameKey))
+            {
+                if (_activeVideoItemUIView)
+                {
+                    _activeVideoItemUIView.ActiveState = Stopped;
+                }
+
+                return;
+            }
+
+            if (_activeVideoItemUIView && (_activeVideoItemUIView.Playback.LoopProgress >= 0.99F))
+            {
+                var nextVideoData = _uploadedVideosData.NextFrom(_activeVideoItemUIView.VideoData);
+                var uiView = _uploadedVideoItemsUIViews[nextVideoData];
+                if (_activeVideoItemUIView != uiView)
+                {
+                    OnPlayClicked(uiView);
+                }
+            }
         }
 
         private void OnDisable()
@@ -45,6 +77,11 @@ namespace UI.Views.Admin.UploadedVideos
         private void DestroyItem(VideoData videoData)
         {
             _uploadedVideoItemsUIViews.Remove(videoData, out var uiView);
+            if (_activeVideoItemUIView == uiView)
+            {
+                _activeVideoItemUIView = null;
+            }
+
             uiView.PlayClicked -= OnPlayClicked;
             Destroy(uiView.gameObject);
         }

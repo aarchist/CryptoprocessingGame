@@ -6,7 +6,6 @@ using Data.Video;
 using Services.Data.Core;
 using Services.VideoRender.Core;
 using UnityEngine;
-using UnityEngine.Video;
 using Object = UnityEngine.Object;
 
 namespace Services.VideoRender
@@ -30,8 +29,8 @@ namespace Services.VideoRender
                 AddPlayback(uploadedVideo);
             }
 
-            ServiceLocator.Get<IDataService>().Get<UploadedVideosData>().VideoRemoved -= RemovePlayback;
-            ServiceLocator.Get<IDataService>().Get<UploadedVideosData>().VideoAdded -= AddPlayback;
+            ServiceLocator.Get<IDataService>().Get<UploadedVideosData>().VideoRemoved += RemovePlayback;
+            ServiceLocator.Get<IDataService>().Get<UploadedVideosData>().VideoAdded += AddPlayback;
         }
 
         public async void ReplaceVideo(String videoPath, VideoData videoData, Action onComplete)
@@ -55,42 +54,22 @@ namespace Services.VideoRender
             onComplete?.Invoke();
         }
 
-        public async void GetPlaybackOrCreateNew(VideoData videoData, Action<VideoPlayback> onComplete)
+        public async void GetPlayback(VideoData videoData, Action<VideoPlayback> onComplete)
         {
-            if (_playbacks.TryGetValue(videoData, out var playback))
-            {
-                onComplete.Invoke(playback);
-                return;
-            }
-
-            AddPlayback(videoData);
-            playback = _playbacks[videoData];
+            var playback = _playbacks[videoData];
             await UniTask.WaitUntil(playback, videoPlayback => videoPlayback.IsLoaded);
             onComplete.Invoke(playback);
         }
 
-        public void LoadVideo(String videoPath, Action<VideoData> onComplete)
+        private void AddPlayback(VideoData videoData)
         {
-            var playback = new VideoPlayback(CreateVideoPlayer(_gameObject));
-            var videoData = new VideoData
-            {
-                Path = videoPath,
-                Name = Path.GetFileName(videoPath)
-            };
+            var playback = new VideoPlayback(_gameObject);
             _playbacks.Add(videoData, playback);
-            playback.Load(videoPath, () =>
+            playback.Load(videoData.Path, () =>
             {
                 videoData.Resolution = new Vector2(playback.Width, playback.Height);
                 videoData.Duration = playback.Duration;
-                onComplete?.Invoke(videoData);
             });
-        }
-
-        private void AddPlayback(VideoData videoData)
-        {
-            var playback = new VideoPlayback(CreateVideoPlayer(_gameObject));
-            _playbacks.Add(videoData, playback);
-            playback.Load(videoData.Path);
         }
 
         private void RemovePlayback(VideoData videoData)
@@ -102,7 +81,7 @@ namespace Services.VideoRender
         public void Dispose()
         {
             ServiceLocator.Get<IDataService>().Get<UploadedVideosData>().VideoRemoved -= RemovePlayback;
-            ServiceLocator.Get<IDataService>().Get<UploadedVideosData>().VideoAdded -= AddPlayback;
+            ServiceLocator.Get<IDataService>().Get<UploadedVideosData>().VideoAdded -= RemovePlayback;
             foreach (var playback in _playbacks.Values)
             {
                 playback.Dispose();
@@ -113,16 +92,6 @@ namespace Services.VideoRender
             {
                 Object.Destroy(_gameObject);
             }
-        }
-
-        private static VideoPlayer CreateVideoPlayer(GameObject gameObject)
-        {
-            var videoPlayer = gameObject.AddComponent<VideoPlayer>();
-            videoPlayer.aspectRatio = VideoAspectRatio.FitInside;
-            videoPlayer.source = VideoSource.Url;
-            videoPlayer.playOnAwake = false;
-            videoPlayer.isLooping = true;
-            return videoPlayer;
         }
     }
 }

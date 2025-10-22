@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1920
     height: 989
   m_ShowMode: 4
-  m_Title: Console
+  m_Title: Project
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 332}
   m_MaxSize: {x: 10000, y: 10000}
@@ -118,7 +118,7 @@ MonoBehaviour:
   m_MinSize: {x: 400, y: 100}
   m_MaxSize: {x: 32384, y: 16192}
   vertical: 1
-  controlID: 59480
+  controlID: 41
   draggingID: 0
 --- !u!114 &6
 MonoBehaviour:
@@ -145,7 +145,7 @@ MonoBehaviour:
   m_MinSize: {x: 400, y: 100}
   m_MaxSize: {x: 32384, y: 16192}
   vertical: 0
-  controlID: 59481
+  controlID: 42
   draggingID: 0
 --- !u!114 &7
 MonoBehaviour:
@@ -171,7 +171,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 100}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 59482
+  controlID: 43
   draggingID: 0
 --- !u!114 &8
 MonoBehaviour:
@@ -197,7 +197,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 50}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 59483
+  controlID: 44
   draggingID: 0
 --- !u!114 &9
 MonoBehaviour:
@@ -277,7 +277,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 50}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 59574
+  controlID: 162
   draggingID: 0
 --- !u!114 &12
 MonoBehaviour:
@@ -289,7 +289,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 1
   m_Script: {fileID: 12006, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: ConsoleWindow
+  m_Name: ProjectBrowser
   m_EditorClassIdentifier: 
   m_Children: []
   m_Position:
@@ -298,15 +298,15 @@ MonoBehaviour:
     y: 0
     width: 724
     height: 397
-  m_MinSize: {x: 51, y: 76}
-  m_MaxSize: {x: 4001, y: 4026}
-  m_ActualView: {fileID: 22}
+  m_MinSize: {x: 231, y: 276}
+  m_MaxSize: {x: 10001, y: 10026}
+  m_ActualView: {fileID: 21}
   m_Panes:
   - {fileID: 21}
   - {fileID: 22}
   - {fileID: 23}
-  m_Selected: 1
-  m_LastSelected: 0
+  m_Selected: 0
+  m_LastSelected: 1
 --- !u!114 &13
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -532,7 +532,7 @@ MonoBehaviour:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: 8a54fcff9c54fcff4057fcff5277fcff6477fcff0e7afcfff2eefcffc295fdffd495fdff2496fdffd8c2fdffeac2fdff22c3fdff2cc3fdff3ac3fdffbce2fdffc6e2fdffcce2fdff422bffffb6deffff30f5ffff04fbfffff4ffffff36b7000040b7000060b700007cb7000088b7000090b700009eb70000b0b70000b4b70000
+      m_ExpandedIDs: 0afbffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -1283,9 +1283,9 @@ MonoBehaviour:
   m_AudioPlay: 0
   m_DebugDrawModesUseInteractiveLightBakingData: 0
   m_Position:
-    m_Target: {x: 411.7826, y: 491.09528, z: -1.420965}
+    m_Target: {x: 737.51825, y: 579.93835, z: -1.4245652}
     speed: 2
-    m_Value: {x: 411.7826, y: 491.09528, z: -1.420965}
+    m_Value: {x: 737.51825, y: 579.93835, z: -1.4245652}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -1335,9 +1335,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 696.7837
+    m_Target: 830.9275
     speed: 2
-    m_Value: 696.7837
+    m_Value: 830.9275
   m_Ortho:
     m_Target: 1
     speed: 2
@@ -1429,9 +1429,9 @@ MonoBehaviour:
   m_Pos:
     serializedVersion: 2
     x: 0
-    y: 616
+    y: 24
     width: 723
-    height: 370
+    height: 371
   m_SerializedDataModeController:
     m_DataMode: 0
     m_PreferredDataMode: 0
@@ -1464,15 +1464,15 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 75
   m_LastFolders:
-  - Assets/Resources
+  - Assets
   m_LastFoldersGridSize: 75
   m_LastProjectPath: C:\Users\Roman Plotnikov\source\repos\CryptoprocessingGame
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 9eb40000
-    m_LastClickedID: 46238
+    m_SelectedIDs: f4b70000
+    m_LastClickedID: 47092
     m_ExpandedIDs: 00000000f4b70000f6b70000f8b70000fab70000fcb70000feb7000000b8000002b8000004b8000006b8000008b80000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -1531,7 +1531,7 @@ MonoBehaviour:
     m_SelectedInstanceIDs: 
     m_LastClickedInstanceID: 0
     m_HadKeyboardFocusLastEvent: 0
-    m_ExpandedInstanceIDs: c623000078e004005cc900001ecb0000a4f300006aad000068ad0000c4e30000a8da000022b0000092f4000086f40000a6f300007ef30000e2f300004af40000b6f40000caf40000c4b0000014dd000084b10000faae00004ae100001800000000930000ac9200009a8f0000988f0000a88f0000429c0000349c0000c08f00007cbb0000aa8f00008abb000018900000dca00000faa00000229c0000daa80000ca9b00000e9000004a9300000aae0000deb20000309d0000a29b0000a00200004a9d0000b88601002443010092ca0100ba93000028430100aeca0100a29e00002c9400003ca1000032a00000c29f0000aea0000054960000ca940000b49f0000549c00008eae00005a9c000010b5000024b500002e99000060990000049d0000d0b300002cba0000bebf0000beb30000babf0000f4b3000026b5000056070100ac110100c4ee000064dd000058ee00003eb70000e4b200004eb100003cc2000040c200007ad0000030b800005865010000000000
+    m_ExpandedInstanceIDs: c623000078e004005cc900001ecb0000a4f300006aad000068ad0000c4e30000a8da000022b0000092f4000086f40000a6f300007ef30000e2f300004af40000b6f40000caf40000c4b0000014dd000084b10000faae00004ae100001800000000930000ac9200009a8f0000988f0000a88f0000429c0000349c0000c08f00007cbb0000aa8f00008abb000018900000dca00000faa00000229c0000daa80000ca9b00000e9000004a9300000aae0000deb20000309d0000a29b00004a9d0000b88601002443010092ca0100ba93000028430100aeca0100a29e00002c9400003ca1000032a00000c29f0000aea0000054960000ca940000b49f0000549c00008eae00005a9c000010b5000024b500002e99000060990000049d0000d0b300002cba0000bebf0000beb30000babf0000f4b3000026b5000056070100ac110100c4ee000064dd000058ee00003eb70000e4b200004eb100003cc2000040c200007ad0000030b800005865010000000000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1582,7 +1582,7 @@ MonoBehaviour:
   m_Pos:
     serializedVersion: 2
     x: 0
-    y: 24
+    y: 615
     width: 723
     height: 371
   m_SerializedDataModeController:

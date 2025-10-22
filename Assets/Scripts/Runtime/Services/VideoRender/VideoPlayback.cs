@@ -11,9 +11,9 @@ namespace Services.VideoRender
         private readonly VideoPlayer _videoPlayer;
         private IRenderOutput _output;
 
-        public VideoPlayback(VideoPlayer videoPlayer)
+        public VideoPlayback(GameObject gameObject)
         {
-            _videoPlayer = videoPlayer;
+            _videoPlayer = CreateVideoPlayer(gameObject);
             _videoPlayer.targetTexture = _renderTexture;
         }
 
@@ -72,6 +72,15 @@ namespace Services.VideoRender
 
             _renderTexture.Release();
             Object.Destroy(_renderTexture);
+        }
+
+        private static VideoPlayer CreateVideoPlayer(GameObject gameObject)
+        {
+            var videoPlayer = gameObject.AddComponent<VideoPlayer>();
+            videoPlayer.aspectRatio = VideoAspectRatio.FitInside;
+            videoPlayer.source = VideoSource.Url;
+            videoPlayer.playOnAwake = false;
+            return videoPlayer;
         }
     }
 }
