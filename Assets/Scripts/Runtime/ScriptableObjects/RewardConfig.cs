@@ -13,6 +13,10 @@ namespace ScriptableObjects
         private Int32 _weight;
         [SerializeField]
         private String _id;
+        [SerializeField]
+        private String _name;
+
+        public String Name => _name;
 
         public String ID => _id;
 

@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.annulusgames.lit-motion": "2.0.1",
     "com.cysharp.unitask": "2.5.10",
     "com.gkngkc.sfb": "1.3.1",
     "com.unity.2d.sprite": "1.0.0",
@@ -47,7 +48,8 @@
       "url": "https://package.openupm.com",
       "scopes": [
         "com.gkngkc.sfb",
-        "com.cysharp.unitask"
+        "com.cysharp.unitask",
+        "com.annulusgames.lit-motion"
       ]
     }
   ]

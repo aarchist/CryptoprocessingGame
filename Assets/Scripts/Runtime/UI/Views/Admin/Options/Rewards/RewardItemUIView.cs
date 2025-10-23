@@ -40,7 +40,7 @@ namespace UI.Views.Admin.Options.Rewards
 
         private void UpdateWeight(String text)
         {
-            if (Int32.TryParse(text, out var weight))
+            if (Int32.TryParse(text, out var weight) && (weight > 0))
             {
                 _rewardData.Weight = weight;
                 return;

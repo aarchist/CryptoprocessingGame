@@ -15,7 +15,7 @@ namespace UI.Views.Admin.Options
         [SerializeField]
         private TMP_InputField _capsuleSpinDurationInputField;
         [SerializeField]
-        private TMP_InputField _showRewardDurationInputField;
+        private TMP_InputField _inactiveDurationInputField;
         [SerializeField]
         private TMP_InputField _startGameKeyInputField;
         [SerializeField]
@@ -27,15 +27,14 @@ namespace UI.Views.Admin.Options
         {
             base.Initialize();
             _gameData = ServiceLocator.Get<IDataService>().Get<GameData>();
-            _showRewardDurationInputField.SetTextWithoutNotify(_gameData.RewardDuration.ToString());
+            _inactiveDurationInputField.SetTextWithoutNotify(_gameData.InactiveSeconds.ToString());
             _capsuleSpinDurationInputField.SetTextWithoutNotify(_gameData.SpinDuration.ToString());
-            _startGameKeyInputField.SetTextWithoutNotify(_gameData.StartGameKey.ToString());
-          
+            _startGameKeyInputField.SetTextWithoutNotify(_gameData.PlayerActionKey.ToString());
         }
 
         private void OnEnable()
         {
-            _showRewardDurationInputField.onSubmit.AddListener(ChangeRewardDuration);
+            _inactiveDurationInputField.onSubmit.AddListener(ChangeInactiveDuration);
             _capsuleSpinDurationInputField.onSubmit.AddListener(ChangeSpinDuration);
             _startGameKeyInputField.onSubmit.AddListener(ChangeStartGameKey);
             _listenButton.onClick.AddListener(ListenButton);
@@ -43,21 +42,21 @@ namespace UI.Views.Admin.Options
 
         private void OnDisable()
         {
-            _showRewardDurationInputField.onSubmit.RemoveListener(ChangeRewardDuration);
+            _inactiveDurationInputField.onSubmit.RemoveListener(ChangeInactiveDuration);
             _capsuleSpinDurationInputField.onSubmit.RemoveListener(ChangeSpinDuration);
             _startGameKeyInputField.onSubmit.RemoveListener(ChangeStartGameKey);
             _listenButton.onClick.RemoveListener(ListenButton);
         }
 
-        private void ChangeRewardDuration(String text)
+        private void ChangeInactiveDuration(String text)
         {
             if (Int32.TryParse(text, out var duration))
             {
-                _gameData.RewardDuration = duration;
+                _gameData.InactiveSeconds = duration;
                 return;
             }
 
-            _showRewardDurationInputField.SetTextWithoutNotify(_gameData.RewardDuration.ToString());
+            _inactiveDurationInputField.SetTextWithoutNotify(_gameData.InactiveSeconds.ToString());
         }
 
         private void ChangeSpinDuration(String text)
@@ -75,11 +74,11 @@ namespace UI.Views.Admin.Options
         {
             if (TryParse(text, out var keyCode))
             {
-                _gameData.StartGameKey = keyCode;
+                _gameData.PlayerActionKey = keyCode;
                 return;
             }
 
-            _startGameKeyInputField.SetTextWithoutNotify(_gameData.StartGameKey.ToString());
+            _startGameKeyInputField.SetTextWithoutNotify(_gameData.PlayerActionKey.ToString());
         }
 
         private async void ListenButton()
@@ -89,8 +88,8 @@ namespace UI.Views.Admin.Options
             _listenButton.interactable = true;
             if (TryReadKeyDown(out var keyCode))
             {
-                _gameData.StartGameKey = keyCode;
-                _startGameKeyInputField.SetTextWithoutNotify(_gameData.StartGameKey.ToString());
+                _gameData.PlayerActionKey = keyCode;
+                _startGameKeyInputField.SetTextWithoutNotify(_gameData.PlayerActionKey.ToString());
                 Input.ResetInputAxes();
             }
         }

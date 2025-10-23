@@ -1,7 +1,5 @@
-﻿using System.Linq;
-using Data.Reward;
+﻿using Data.Reward;
 using Services;
-using Services.Config.Core;
 using Services.Data.Core;
 using UI.Views.Core;
 using UnityEngine;
@@ -20,20 +18,7 @@ namespace UI.Views.Admin.Options.Rewards
         {
             base.Initialize();
 
-            var rewardsData = ServiceLocator.Get<IDataService>().Get<RewardsData>();
-            var rewardConfigs = ServiceLocator.Get<IConfigService>().RewardConfigs;
-            rewardsData.RemoveAllExcept(rewardConfigs.Select(rewardConfig => rewardConfig.ID).ToList());
-            foreach (var rewardConfig in rewardConfigs)
-            {
-                if (rewardsData.ContainsID(rewardConfig.ID))
-                {
-                    continue;
-                }
-
-                rewardsData.Add(rewardConfig.CreateData());
-            }
-
-            foreach (var rewardData in rewardsData.Rewards)
+            foreach (var rewardData in ServiceLocator.Get<IDataService>().Get<RewardsData>().Rewards)
             {
                 CreateData(rewardData);
             }

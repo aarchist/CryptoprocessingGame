@@ -16,14 +16,14 @@ namespace Services.Displays
         public void Initialize()
         {
             ServiceLocator.Get<ILoopsService>().Updated += CheckSecondDisplay;
+            if (HasSecondDisplay)
+            {
+                SecondsDisplay.Activate();
+            }
         }
 
         private void CheckSecondDisplay()
         {
-            if (HasSecondDisplay && !SecondsDisplay.active)
-            {
-                SecondsDisplay.Activate();
-            }
         }
 
         public void Dispose()

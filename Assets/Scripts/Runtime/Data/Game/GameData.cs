@@ -6,8 +6,8 @@ namespace Data.Game
 {
     public sealed class GameData : IData
     {
-        public KeyCode StartGameKey = KeyCode.Return;
-        public Int32 RewardDuration;
-        public Int32 SpinDuration;
+        public KeyCode PlayerActionKey = KeyCode.Return;
+        public Int32 InactiveSeconds = 60;
+        public Int32 SpinDuration = 4;
     }
 }

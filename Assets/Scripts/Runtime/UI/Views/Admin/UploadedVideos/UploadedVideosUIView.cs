@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
-using Data.Game;
+﻿using System;
+using System.Collections.Generic;
 using Data.Video;
 using Services;
 using Services.Data.Core;
+using Services.UIView.Core;
 using UI.Views.Core;
+using UI.Views.VideoOutput;
 using UnityEngine;
 using UnityEngine.UI;
 using static UI.Views.Admin.UploadedVideos.VideoItemUIView.State;
@@ -25,43 +27,50 @@ namespace UI.Views.Admin.UploadedVideos
 
         private UploadedVideosData _uploadedVideosData;
         private VideoItemUIView _activeVideoItemUIView;
-        private GameData _gameData;
+
+        public Boolean IsVideoActive
+        {
+            set
+            {
+                var videoOutput = ServiceLocator.Get<IUIViewService>().Get<VideoOutputUIView>();
+                if (value)
+                {
+                    videoOutput.Show();
+                }
+                else
+                {
+                    videoOutput.Hide();
+                }
+            }
+        }
 
         public override void Initialize()
         {
             base.Initialize();
-            foreach (var videoData in ServiceLocator.Get<IDataService>().Get<UploadedVideosData>().UploadedVideos)
+            _uploadedVideosData = ServiceLocator.Get<IDataService>().Get<UploadedVideosData>();
+            foreach (var videoData in _uploadedVideosData.UploadedVideos)
             {
                 CreateItem(videoData);
             }
-
-            _gameData = ServiceLocator.Get<IDataService>().Get<GameData>();
         }
 
         private void OnEnable()
         {
-            _uploadedVideosData = ServiceLocator.Get<IDataService>().Get<UploadedVideosData>();
             _uploadedVideosData.VideoRemoved += DestroyItem;
             _uploadedVideosData.VideoAdded += CreateItem;
         }
 
         private void Update()
         {
-            if (Input.GetKeyDown(_gameData.StartGameKey))
-            {
-                if (_activeVideoItemUIView)
-                {
-                    _activeVideoItemUIView.ActiveState = Stopped;
-                }
-
-                return;
-            }
-
-            if (_activeVideoItemUIView && (_activeVideoItemUIView.Playback.LoopProgress >= 0.99F))
+            if (_activeVideoItemUIView && (_activeVideoItemUIView.ActiveState is Completed))
             {
                 var nextVideoData = _uploadedVideosData.NextFrom(_activeVideoItemUIView.VideoData);
                 var uiView = _uploadedVideoItemsUIViews[nextVideoData];
-                if (_activeVideoItemUIView != uiView)
+                if (_activeVideoItemUIView == uiView)
+                {
+                    _activeVideoItemUIView.ActiveState = Played;
+                }
+                else
                 {
                     OnPlayClicked(uiView);
                 }
@@ -74,6 +83,14 @@ namespace UI.Views.Admin.UploadedVideos
             _uploadedVideosData.VideoAdded -= CreateItem;
         }
 
+        private void CreateItem(VideoData videoData)
+        {
+            var uiView = Instantiate(_videoItemUIViewPrefab, _scrollRect.content);
+            uiView.Setup(videoData);
+            uiView.PlayClicked += OnPlayClicked;
+            _uploadedVideoItemsUIViews.Add(videoData, uiView);
+        }
+
         private void DestroyItem(VideoData videoData)
         {
             _uploadedVideoItemsUIViews.Remove(videoData, out var uiView);
@@ -84,14 +101,6 @@ namespace UI.Views.Admin.UploadedVideos
 
             uiView.PlayClicked -= OnPlayClicked;
             Destroy(uiView.gameObject);
-        }
-
-        private void CreateItem(VideoData videoData)
-        {
-            var uiView = Instantiate(_videoItemUIViewPrefab, _scrollRect.content);
-            uiView.Setup(videoData);
-            uiView.PlayClicked += OnPlayClicked;
-            _uploadedVideoItemsUIViews.Add(videoData, uiView);
         }
 
         private void OnPlayClicked(VideoItemUIView videoItemUIView)

@@ -11,6 +11,7 @@ using UI.Views.Popups;
 using UI.Views.VideoOutput;
 using UnityEngine;
 using UnityEngine.UI;
+using static UI.Views.Admin.UploadedVideos.VideoItemUIView.State;
 
 namespace UI.Views.Admin.UploadedVideos
 {
@@ -35,11 +36,10 @@ namespace UI.Views.Admin.UploadedVideos
         [SerializeField]
         private Image _pauseIconImage;
 
+        private VideoPlayback _playback;
         private State _state;
 
         public event Action<VideoItemUIView> PlayClicked;
-
-        public VideoPlayback Playback { get; private set; }
 
         public VideoData VideoData { get; private set; }
 
@@ -49,29 +49,29 @@ namespace UI.Views.Admin.UploadedVideos
             set
             {
                 _state = value;
-                if (value == State.Stopped)
+                if (_state is Stopped or Completed)
                 {
                     _durationTextMeshProUGUI.text = $"{VideoData.Duration / 60:D2}:{VideoData.Duration % 60:D2}";
                     _resolutionTextMeshProUGUI.text = $"[{VideoData.Resolution.x}x{VideoData.Resolution.y}]";
                     _nameTextMeshProUGUI.text = VideoData.Name;
                     PlayIconEnabled = true;
                     ShowedProgress = 0.0F;
-                    Playback.Stop();
+                    _playback.Stop();
                     return;
                 }
 
-                if (value == State.Played)
+                if (_state is Played)
                 {
-                    ServiceLocator.Get<IUIViewService>().Get<VideoOutputUIView>().Setup(Playback.RenderTexture);
+                    ServiceLocator.Get<IUIViewService>().Get<VideoOutputUIView>().Setup(_playback.RenderTexture);
                     PlayIconEnabled = false;
-                    Playback.Play();
+                    _playback.Play();
                     return;
                 }
 
-                if (value == State.Paused)
+                if (_state is Paused)
                 {
                     PlayIconEnabled = true;
-                    Playback.Pause();
+                    _playback.Pause();
                     return;
                 }
             }
@@ -81,7 +81,7 @@ namespace UI.Views.Admin.UploadedVideos
         {
             set
             {
-                _progressImage.enabled = value > 0.001f;
+                _progressImage.enabled = value > 0.001F;
                 _progressImage.fillAmount = value;
             }
         }
@@ -100,8 +100,8 @@ namespace UI.Views.Admin.UploadedVideos
             VideoData = videoData;
             ServiceLocator.Get<IVideoRenderService>().GetPlayback(videoData, playback =>
             {
-                Playback = playback;
-                ActiveState = State.Stopped;
+                _playback = playback;
+                ActiveState = Stopped;
             });
         }
 
@@ -114,9 +114,13 @@ namespace UI.Views.Admin.UploadedVideos
 
         private void Update()
         {
-            if ((_state is State.Played) && (Playback != null))
+            if ((ActiveState is Played) && (_playback != null))
             {
                 ShowPlaybackProgress();
+                if (_playback.LoopProgress >= 0.99F)
+                {
+                    ActiveState = Completed;
+                }
             }
         }
 
@@ -129,8 +133,8 @@ namespace UI.Views.Admin.UploadedVideos
 
         private void ShowPlaybackProgress()
         {
-            _durationTextMeshProUGUI.text = $"{Playback.Time / 60:D2}:{Playback.Time % 60:D2} / {VideoData.Duration / 60:D2}:{VideoData.Duration % 60:D2}";
-            ShowedProgress = Playback.LoopProgress;
+            _durationTextMeshProUGUI.text = $"{_playback.Time / 60:D2}:{_playback.Time % 60:D2} / {VideoData.Duration / 60:D2}:{VideoData.Duration % 60:D2}";
+            ShowedProgress = _playback.LoopProgress;
         }
 
         private void ReplaceFile()
@@ -138,7 +142,7 @@ namespace UI.Views.Admin.UploadedVideos
             ServiceLocator.Get<IFileSystemService>().ChooseVideoFile(videoPath =>
             {
                 var previousState = ActiveState;
-                ActiveState = State.Stopped;
+                ActiveState = Stopped;
                 ServiceLocator.Get<IVideoRenderService>().ReplaceVideo(videoPath, VideoData, () => ActiveState = previousState);
             });
         }
@@ -153,7 +157,7 @@ namespace UI.Views.Admin.UploadedVideos
         private void Delete()
         {
             ServiceLocator.Get<IDataService>().Get<UploadedVideosData>().Remove(VideoData);
-            Playback = null;
+            _playback = null;
         }
 
         private void OnPlayClicked()
@@ -166,6 +170,7 @@ namespace UI.Views.Admin.UploadedVideos
             Played,
             Paused,
             Stopped,
+            Completed,
         }
     }
 }
