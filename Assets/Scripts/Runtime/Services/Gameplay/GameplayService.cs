@@ -70,7 +70,7 @@ namespace Services.Gameplay
                 }
             }
 
-            if (!Input.GetKeyDown(_gameData.PlayerActionKey))
+            if (!Input.GetKeyDown(_gameData.GameplayButtonKey))
             {
                 return;
             }

@@ -8,26 +8,17 @@ namespace ScriptableObjects
     public sealed class RewardConfig : ScriptableObject
     {
         [SerializeField]
-        private Boolean _active;
-        [SerializeField]
-        private Int32 _weight;
-        [SerializeField]
-        private String _id;
+        private RewardData _rewardData;
         [SerializeField]
         private String _name;
 
         public String Name => _name;
 
-        public String ID => _id;
+        public String ID => _rewardData.ID;
 
         public RewardData CreateData()
         {
-            return new RewardData()
-            {
-                IsActive = _active,
-                Weight = _weight,
-                ID = _id
-            };
+            return _rewardData.Clone();
         }
     }
 }

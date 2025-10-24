@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be66a2fa3b884a3a9e29e4b61a6f9b15, type: 3}
   m_Name: RewardConfig 2
   m_EditorClassIdentifier: 
-  _active: 0
-  _weight: 0
-  _id: Reward 3
+  _rewardData:
+    IsActive: 1
+    Weight: 1
+    ID: reward_id_2
   _name: USDT 300

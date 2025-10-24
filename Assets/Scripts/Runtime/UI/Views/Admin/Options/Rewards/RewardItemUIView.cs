@@ -2,6 +2,7 @@
 using Data.Reward;
 using TMPro;
 using UI.Views.Core;
+using UI.Views.Properties;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,9 +11,9 @@ namespace UI.Views.Admin.Options.Rewards
     public sealed class RewardItemUIView : UIViewBehaviour
     {
         [SerializeField]
-        private TextMeshProUGUI _nameTextMeshProUGUI;
+        private Int32PropertyUIView _weightPropertyUIView;
         [SerializeField]
-        private TMP_InputField _weightInputField;
+        private TextMeshProUGUI _nameTextMeshProUGUI;
         [SerializeField]
         private Toggle _toggle;
 
@@ -21,32 +22,19 @@ namespace UI.Views.Admin.Options.Rewards
         public void Setup(RewardData rewardData)
         {
             _rewardData = rewardData;
-            _weightInputField.SetTextWithoutNotify(rewardData.Weight.ToString());
+            _weightPropertyUIView.Setup(() => _rewardData.Weight, weight => _rewardData.Weight = weight);
             _toggle.SetIsOnWithoutNotify(rewardData.IsActive);
             _nameTextMeshProUGUI.text = rewardData.ID;
         }
 
         private void OnEnable()
         {
-            _weightInputField.onSubmit.AddListener(UpdateWeight);
             _toggle.onValueChanged.AddListener(UpdateData);
         }
 
         private void OnDisable()
         {
-            _weightInputField.onSubmit.RemoveListener(UpdateWeight);
             _toggle.onValueChanged.RemoveListener(UpdateData);
-        }
-
-        private void UpdateWeight(String text)
-        {
-            if (Int32.TryParse(text, out var weight) && (weight > 0))
-            {
-                _rewardData.Weight = weight;
-                return;
-            }
-
-            _weightInputField.SetTextWithoutNotify(text);
         }
 
         private void UpdateData(Boolean active)

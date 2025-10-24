@@ -1,21 +1,17 @@
 ﻿using System;
-using UnityEngine;
 
 namespace Data.Reward
 {
     [Serializable]
     public class RewardData
     {
-        [SerializeField]
-        private Int32 _weight = 1;
-
         public Boolean IsActive = true;
-        public String ID;
+        public Int32 Weight = 1;
+        public String ID = "reward_id";
 
-        public Int32 Weight
+        public RewardData Clone()
         {
-            get => _weight;
-            set => _weight = Math.Min(value, 1);
+            return (RewardData)MemberwiseClone();
         }
     }
 }
