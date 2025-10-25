@@ -8,7 +8,6 @@ using UI.Views.Core;
 using UI.Views.VideoOutput;
 using UnityEngine;
 using UnityEngine.UI;
-using static UI.Views.Admin.UploadedVideos.VideoItemUIView.State;
 
 namespace UI.Views.Admin.UploadedVideos
 {
@@ -17,16 +16,15 @@ namespace UI.Views.Admin.UploadedVideos
         private readonly Dictionary<VideoData, VideoItemUIView> _uploadedVideoItemsUIViews = new();
 
         [SerializeField]
+        private VideoItemControlsUIView _videoItemControlsUIView;
+        [SerializeField]
+        private ChangedDataTextUIView _changedDataTextUIView;
+        [SerializeField]
         private VideoItemUIView _videoItemUIViewPrefab;
-        [SerializeField]
-        private GameObject _disconnectedDisplayIcon;
-        [SerializeField]
-        private GameObject _connectedDisplayIcon;
         [SerializeField]
         private ScrollRect _scrollRect;
 
         private UploadedVideosData _uploadedVideosData;
-        private VideoItemUIView _activeVideoItemUIView;
 
         public Boolean IsVideoActive
         {
@@ -52,29 +50,19 @@ namespace UI.Views.Admin.UploadedVideos
             {
                 CreateItem(videoData);
             }
+
+            _changedDataTextUIView.Setup(_uploadedVideosData);
+            _videoItemControlsUIView.Setup(current =>
+            {
+                var nextVideoData = _uploadedVideosData.NextFrom(current.VideoData);
+                return _uploadedVideoItemsUIViews[nextVideoData];
+            });
         }
 
         private void OnEnable()
         {
             _uploadedVideosData.VideoRemoved += DestroyItem;
             _uploadedVideosData.VideoAdded += CreateItem;
-        }
-
-        private void Update()
-        {
-            if (_activeVideoItemUIView && (_activeVideoItemUIView.ActiveState is Completed))
-            {
-                var nextVideoData = _uploadedVideosData.NextFrom(_activeVideoItemUIView.VideoData);
-                var uiView = _uploadedVideoItemsUIViews[nextVideoData];
-                if (_activeVideoItemUIView == uiView)
-                {
-                    _activeVideoItemUIView.ActiveState = Played;
-                }
-                else
-                {
-                    OnPlayClicked(uiView);
-                }
-            }
         }
 
         private void OnDisable()
@@ -87,37 +75,25 @@ namespace UI.Views.Admin.UploadedVideos
         {
             var uiView = Instantiate(_videoItemUIViewPrefab, _scrollRect.content);
             uiView.Setup(videoData);
-            uiView.PlayClicked += OnPlayClicked;
+            uiView.Clicked += OnClick;
             _uploadedVideoItemsUIViews.Add(videoData, uiView);
         }
 
         private void DestroyItem(VideoData videoData)
         {
             _uploadedVideoItemsUIViews.Remove(videoData, out var uiView);
-            if (_activeVideoItemUIView == uiView)
+            uiView.Clicked -= OnClick;
+            if (_videoItemControlsUIView.Selected == uiView)
             {
-                _activeVideoItemUIView = null;
+                _videoItemControlsUIView.Selected = null;
             }
 
-            uiView.PlayClicked -= OnPlayClicked;
             Destroy(uiView.gameObject);
         }
 
-        private void OnPlayClicked(VideoItemUIView videoItemUIView)
+        private void OnClick(VideoItemUIView uiView)
         {
-            if (_activeVideoItemUIView == videoItemUIView)
-            {
-                videoItemUIView.ActiveState = (videoItemUIView.ActiveState is Played) ? Paused : Played;
-                return;
-            }
-
-            if (_activeVideoItemUIView)
-            {
-                _activeVideoItemUIView.ActiveState = Stopped;
-            }
-
-            _activeVideoItemUIView = videoItemUIView;
-            _activeVideoItemUIView.ActiveState = Played;
+            _videoItemControlsUIView.Selected = uiView;
         }
     }
 }

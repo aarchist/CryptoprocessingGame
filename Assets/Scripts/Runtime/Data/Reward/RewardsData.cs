@@ -7,12 +7,32 @@ using UnityEngine;
 namespace Data.Reward
 {
     [Serializable]
-    public class RewardsData : IData
+    public sealed class RewardsData : BaseData
     {
         [SerializeField]
         private List<RewardData> _rewards = new();
 
         public IReadOnlyList<RewardData> Rewards => _rewards;
+
+        public override Boolean IsChanged
+        {
+            get => _rewards.Any(reward => reward.IsChanged);
+            set => _rewards.ForEach(data => data.IsChanged = value);
+        }
+
+        protected override void LoadChanges(IData other)
+        {
+            if (other is not RewardsData rewardData)
+            {
+                return;
+            }
+
+            var otherRewards = rewardData._rewards;
+            for (var index = 0; index < _rewards.Count; index++)
+            {
+                _rewards[index].LoadChanges(otherRewards[index]);
+            }
+        }
 
         public Boolean ContainsID(String dataID)
         {

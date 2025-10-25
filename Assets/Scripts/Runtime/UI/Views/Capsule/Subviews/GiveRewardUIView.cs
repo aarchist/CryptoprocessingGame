@@ -2,17 +2,17 @@
 using Services;
 using Services.Config.Core;
 using TMPro;
-using UI.Views.Popups.Core;
+using UI.Views.Core;
 using UnityEngine;
 
-namespace UI.Views.Popups
+namespace UI.Views.Capsule
 {
-    public sealed class ClaimRewardPopupUIView : PopupUIView
+    public sealed class GiveRewardUIView : UIViewBehaviour
     {
         [SerializeField]
         private TextMeshProUGUI _rewardNameTextMeshProUGUI;
 
-        public ClaimRewardPopupUIView Setup(String rewardID)
+        public GiveRewardUIView Setup(String rewardID)
         {
             var rewardConfig = ServiceLocator.Get<IConfigService>()[rewardID];
             _rewardNameTextMeshProUGUI.text = rewardConfig.Name;

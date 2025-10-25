@@ -10,7 +10,15 @@ namespace ScriptableObjects
         [SerializeField]
         private RewardData _rewardData;
         [SerializeField]
+        private Vector2 _position;
+        [SerializeField]
+        private Sprite _icon;
+        [SerializeField]
         private String _name;
+
+        public Vector2 Position => _position;
+
+        public Sprite Icon => _icon;
 
         public String Name => _name;
 

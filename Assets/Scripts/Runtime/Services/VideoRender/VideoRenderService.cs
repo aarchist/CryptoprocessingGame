@@ -69,6 +69,7 @@ namespace Services.VideoRender
             {
                 videoData.Resolution = new Vector2(playback.Width, playback.Height);
                 videoData.Duration = playback.Duration;
+                videoData.IsValid = true;
             });
         }
 

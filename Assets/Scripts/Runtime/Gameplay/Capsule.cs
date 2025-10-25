@@ -13,8 +13,7 @@ namespace Gameplay
         public void Spin()
         {
             _motionHandle = LMotion.Create(0.0F, 180.0F, LoopSeconds)
-                .WithEase(Ease.OutQuad)
-                .WithLoops(-1, LoopType.Incremental)
+                .WithLoops(-1)
                 .Bind(transform, (eulerAngleY, currentTransform) =>
                 {
                     var eulerAngles = currentTransform.eulerAngles;
@@ -32,6 +31,7 @@ namespace Gameplay
 
             _motionHandle = LMotion.Create(transform.eulerAngles.y, transform.eulerAngles.y + ((duration / LoopSeconds) * 180.0F), duration)
                 .WithOnComplete(onComplete)
+                .WithEase(Ease.OutSine)
                 .Bind(transform, static (eulerAngleY, currentTransform) =>
                 {
                     var localEulerAngles = currentTransform.localEulerAngles;

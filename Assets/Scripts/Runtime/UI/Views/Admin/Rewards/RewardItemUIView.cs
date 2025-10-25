@@ -6,7 +6,7 @@ using UI.Views.Properties;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UI.Views.Admin.Options.Rewards
+namespace UI.Views.Admin.Rewards
 {
     public sealed class RewardItemUIView : UIViewBehaviour
     {
@@ -23,21 +23,33 @@ namespace UI.Views.Admin.Options.Rewards
         {
             _rewardData = rewardData;
             _weightPropertyUIView.Setup(() => _rewardData.Weight, weight => _rewardData.Weight = weight);
-            _toggle.SetIsOnWithoutNotify(rewardData.IsActive);
-            _nameTextMeshProUGUI.text = rewardData.ID;
+            UpdateView();
+            _rewardData.Reloaded += UpdateView;
         }
 
         private void OnEnable()
         {
-            _toggle.onValueChanged.AddListener(UpdateData);
+            _toggle.onValueChanged.AddListener(OnToggleClicked);
         }
 
         private void OnDisable()
         {
-            _toggle.onValueChanged.RemoveListener(UpdateData);
+            _toggle.onValueChanged.RemoveListener(OnToggleClicked);
         }
 
-        private void UpdateData(Boolean active)
+        private void OnDestroy()
+        {
+            _rewardData.Reloaded -= UpdateView;
+        }
+
+        private void UpdateView()
+        {
+            _toggle.SetIsOnWithoutNotify(_rewardData.IsActive);
+            _nameTextMeshProUGUI.text = _rewardData.ID;
+            _weightPropertyUIView.Actualize();
+        }
+
+        private void OnToggleClicked(Boolean active)
         {
             _rewardData.IsActive = active;
         }

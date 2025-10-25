@@ -20,35 +20,51 @@ namespace Services.Data
 
         public TData Get<TData>() where TData : IData, new()
         {
-            if (_loadedData.TryGetValue(typeof(TData), out var value))
+            var type = typeof(TData);
+            if (_loadedData.TryGetValue(type, out var value))
             {
                 return (TData)value;
             }
 
-            return Load<TData>();
+            var data = Load<TData>();
+            _loadedData.Add(type, data);
+            return data;
+        }
+
+        public void Save(IData data)
+        {
+            PlayerPrefs.SetString(_dataPaths[data.GetType()], JsonUtility.ToJson(data));
+        }
+
+        public IData LoadData(Type type)
+        {
+            var data = (IData)(JsonUtility.FromJson(PlayerPrefs.GetString(_dataPaths[type]), type));
+            if (data == null)
+            {
+                data = (IData)Activator.CreateInstance(type);
+                Save(data);
+            }
+
+            return data;
         }
 
         public void Dispose()
         {
-            foreach (var data in _loadedData.Values)
-            {
-                Save(data);
-            }
-
             _loadedData.Clear();
         }
 
         private TData Load<TData>() where TData : IData, new()
         {
             var type = typeof(TData);
-            var data = (TData)JsonUtility.FromJson(PlayerPrefs.GetString(_dataPaths[type]), type) ?? new TData();
-            _loadedData.Add(type, data);
-            return data;
-        }
+            var data = (TData)JsonUtility.FromJson(PlayerPrefs.GetString(_dataPaths[type]), type);
+            if (data == null)
+            {
+                data = new TData();
+                Save(data);
+            }
 
-        private void Save(IData data)
-        {
-            PlayerPrefs.SetString(_dataPaths[data.GetType()], JsonUtility.ToJson(data));
+            data.IsChanged = false;
+            return data;
         }
     }
 }

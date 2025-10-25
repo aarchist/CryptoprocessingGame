@@ -55,6 +55,10 @@ namespace UI.Views.Properties.Core
         {
             _onGetValue = onGetValue;
             _onSetValue = onSetValue;
+        }
+
+        public void Actualize()
+        {
             _inputField.SetTextWithoutNotify(ActualValue.ToString());
         }
 
@@ -81,7 +85,7 @@ namespace UI.Views.Properties.Core
 
         protected void Commit(Boolean applyValue)
         {
-            if (applyValue)
+            if (applyValue && !Equals(Value, ActualValue))
             {
                 ActualValue = Value;
             }

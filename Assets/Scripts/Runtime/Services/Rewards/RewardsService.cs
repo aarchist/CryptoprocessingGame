@@ -31,6 +31,7 @@ namespace Services.Rewards
 
                 _rewardsData.Add(rewardConfig.CreateData());
             }
+            _rewardsData.Save();
 
             ServiceLocator.Get<IDataService>().Get<RewardsData>();
         }
@@ -40,7 +41,7 @@ namespace Services.Rewards
             var randomWeight = Random.Range(0.0f, TotalWeight);
             var currentWeight = 0.0f;
 
-            foreach (var reward in _rewardsData.Rewards)
+            foreach (var reward in ActiveRewards)
             {
                 currentWeight += reward.Weight;
                 if (randomWeight < currentWeight)

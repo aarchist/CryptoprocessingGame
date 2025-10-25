@@ -45,6 +45,7 @@ namespace UI.Views.Properties
                 return;
             }
 
+            Input.ResetInputAxes();
             Value = keyCode;
             Commit(true);
         }
