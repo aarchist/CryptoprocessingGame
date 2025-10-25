@@ -11,11 +11,13 @@ namespace Data.Video
         [SerializeField]
         private Int32 _duration;
         [SerializeField]
-        private Boolean _isValid;
-        [SerializeField]
         private String _name;
         [SerializeField]
         private String _path;
+
+        private Boolean _isInvalid;
+
+        public event Action ValidationUpdated;
 
         public event Action Reloaded;
 
@@ -31,22 +33,23 @@ namespace Data.Video
             }
         }
 
+        public Boolean IsInvalid
+        {
+            get => _isInvalid;
+            set
+            {
+                _isInvalid = value;
+                IsChanged = true;
+                ValidationUpdated?.Invoke();
+            }
+        }
+
         public Int32 Duration
         {
             get => _duration;
             set
             {
                 _duration = value;
-                IsChanged = true;
-            }
-        }
-
-        public Boolean IsValid
-        {
-            get => _isValid;
-            set
-            {
-                _isValid = value;
                 IsChanged = true;
             }
         }

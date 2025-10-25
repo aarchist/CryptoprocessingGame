@@ -23,6 +23,8 @@ namespace UI.Views.Admin.UploadedVideos
         [SerializeField]
         private TextMeshProUGUI _nameTextMeshProUGUI;
         [SerializeField]
+        private Button _removeButton;
+        [SerializeField]
         private Image _progressImage;
         [SerializeField]
         private Button _button;
@@ -36,18 +38,29 @@ namespace UI.Views.Admin.UploadedVideos
 
         public VideoData VideoData { get; private set; }
 
+        public Boolean IsPlaying => _playback.IsPlaying;
+
         public State ActiveState
         {
             get => _state;
             set
             {
-                _state = value;
-                if (_state is Stopped or Completed)
+                if (VideoData.IsInvalid)
+                {
+                    return;
+                }
+
+                if (value is not Paused)
                 {
                     _durationTextMeshProUGUI.text = $"{VideoData.Duration / 60:D2}:{VideoData.Duration % 60:D2}";
                     _resolutionTextMeshProUGUI.text = $"[{VideoData.Resolution.x}x{VideoData.Resolution.y}]";
                     _nameTextMeshProUGUI.text = VideoData.Name;
                     ShowedProgress = 0.0F;
+                }
+
+                _state = value;
+                if (_state is Stopped or Completed)
+                {
                     _playback.Stop();
                     return;
                 }
@@ -84,39 +97,63 @@ namespace UI.Views.Admin.UploadedVideos
                 _playback = playback;
                 UpdateView();
             });
+            VideoData.ValidationUpdated += OnUpdateValidation;
             VideoData.Reloaded += UpdateView;
         }
 
         private void OnEnable()
         {
+            _removeButton.onClick.AddListener(Delete);
             _button.onClick.AddListener(OnClick);
         }
 
         private void Update()
         {
-            if ((ActiveState is Played) && (_playback != null))
+            if ((ActiveState is not Played) || (_playback == null))
             {
-                ShowPlaybackProgress();
-                if (_playback.LoopProgress >= 0.99F)
-                {
-                    ActiveState = Completed;
-                }
+                return;
+            }
+
+            ShowPlaybackProgress();
+            if (_playback.LoopProgress >= 0.99F)
+            {
+                ActiveState = Completed;
             }
         }
 
         private void OnDisable()
         {
+            _removeButton.onClick.RemoveListener(Delete);
             _button.onClick.RemoveListener(OnClick);
         }
 
         private void OnDestroy()
         {
+            VideoData.ValidationUpdated -= OnUpdateValidation;
             VideoData.Reloaded -= UpdateView;
         }
 
         private void UpdateView()
         {
             ActiveState = Stopped;
+        }
+
+        private void OnUpdateValidation()
+        {
+            if (VideoData.IsInvalid)
+            {
+                _removeButton.gameObject.SetActive(true);
+                _resolutionTextMeshProUGUI.text = "[????:????]";
+                _durationTextMeshProUGUI.text = "??:??/??:??";
+                _nameTextMeshProUGUI.text = "<color=#F44747FF>Invalid (Probably video file is deleted or damaged)</color>";
+                _button.enabled = false;
+            }
+            else
+            {
+                _removeButton.gameObject.SetActive(false);
+                _button.enabled = true;
+                ActiveState = Stopped;
+            }
         }
 
         private void ShowPlaybackProgress()

@@ -41,10 +41,14 @@ namespace UI.Views.Admin.UploadedVideos
             get => _selectedVideoItemUIView;
             set
             {
-                var continuePlaying = false;
-                if (_selectedVideoItemUIView && _selectedVideoItemUIView.ActiveState is Played or Completed)
+                if (_selectedVideoItemUIView == value)
                 {
-                    continuePlaying = true;
+                    return;
+                }
+
+                var continuePlaying = _selectedVideoItemUIView && (_selectedVideoItemUIView.ActiveState is Played or Completed);
+                if (_selectedVideoItemUIView && _selectedVideoItemUIView.ActiveState is not Stopped)
+                {
                     _selectedVideoItemUIView.ActiveState = Stopped;
                 }
 
@@ -55,7 +59,7 @@ namespace UI.Views.Admin.UploadedVideos
                 }
 
                 _selectionImage.enabled = value;
-                IsInteractable = value;
+
                 if (value)
                 {
                     var targetRectTransform = _selectedVideoItemUIView.RectTransform;
@@ -112,7 +116,15 @@ namespace UI.Views.Admin.UploadedVideos
 
         private void Update()
         {
-            if (!_selectedVideoItemUIView || (_selectedVideoItemUIView.ActiveState is not Completed))
+            var isValid = (_selectedVideoItemUIView) && (!_selectedVideoItemUIView.VideoData.IsInvalid);
+            IsInteractable = isValid;
+            if (!isValid)
+            {
+                return;
+            }
+
+            PlayIsOn = _selectedVideoItemUIView.IsPlaying;
+            if (_selectedVideoItemUIView.ActiveState is not Completed)
             {
                 return;
             }
@@ -153,13 +165,11 @@ namespace UI.Views.Admin.UploadedVideos
         {
             if (_selectedVideoItemUIView.ActiveState is Played)
             {
-                PlayIsOn = false;
                 _selectedVideoItemUIView.ActiveState = Paused;
             }
             else
             {
                 ServiceLocator.Get<IGameplayService>().Enter<ShowVideoGameState>();
-                PlayIsOn = true;
                 _selectedVideoItemUIView.ActiveState = Played;
             }
         }

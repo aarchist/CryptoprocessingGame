@@ -33,9 +33,15 @@ namespace Services.Gameplay
 
         public void Enter<TState>() where TState : IGameState
         {
+            var targetState = _availableStates[typeof(TState)];
+            if (_activeState == targetState)
+            {
+                return;
+            }
+
             var previousState = _activeState;
             _activeState.Exit();
-            _activeState = _availableStates[typeof(TState)];
+            _activeState = targetState;
             Debug.Log($"[{nameof(GameplayService)}] {previousState.GetType().Name}->{_activeState.GetType().Name}");
             _activeState.Enter();
         }

@@ -39,12 +39,18 @@ namespace Services.VideoRender
             videoData.Name = Path.GetFileName(videoPath);
             if (_playbacks.TryGetValue(videoData, out var playback))
             {
-                playback.Load(videoPath, () =>
-                {
-                    videoData.Resolution = new Vector2(playback.Width, playback.Height);
-                    videoData.Duration = playback.Duration;
-                    onComplete?.Invoke();
-                });
+                playback.Load(videoPath,
+                    () =>
+                    {
+                        videoData.Resolution = new Vector2(playback.Width, playback.Height);
+                        videoData.Duration = playback.Duration;
+                        onComplete?.Invoke();
+                    },
+                    () =>
+                    {
+                        videoData.IsInvalid = true;
+                        onComplete?.Invoke();
+                    });
                 return;
             }
 
@@ -65,12 +71,13 @@ namespace Services.VideoRender
         {
             var playback = new VideoPlayback(_gameObject);
             _playbacks.Add(videoData, playback);
-            playback.Load(videoData.Path, () =>
-            {
-                videoData.Resolution = new Vector2(playback.Width, playback.Height);
-                videoData.Duration = playback.Duration;
-                videoData.IsValid = true;
-            });
+            playback.Load(videoData.Path,
+                () =>
+                {
+                    videoData.Resolution = new Vector2(playback.Width, playback.Height);
+                    videoData.Duration = playback.Duration;
+                },
+                () => videoData.IsInvalid = true);
         }
 
         private void RemovePlayback(VideoData videoData)

@@ -44,26 +44,47 @@ namespace Data.Video
                 {
                     Remove(_uploadedVideos[^1]);
                 }
+
+                for (var index = 0; index < _uploadedVideos.Count; index++)
+                {
+                    _uploadedVideos[index].LoadChanges(otherUploadedVideos[index]);
+                }
             }
             else if (countDifference < 0)
             {
-                for (var index = (otherUploadedVideos.Count + countDifference); index < otherUploadedVideos.Count; index++)
+                var startIndex = otherUploadedVideos.Count + countDifference;
+                for (var index = startIndex; index < otherUploadedVideos.Count; index++)
                 {
                     Add(otherUploadedVideos[index]);
                 }
-            }
 
-            for (var index = 0; index < _uploadedVideos.Count; index++)
+                for (var index = 0; index < startIndex; index++)
+                {
+                    _uploadedVideos[index].LoadChanges(otherUploadedVideos[index]);
+                }
+            }
+            else
             {
-                _uploadedVideos[index].LoadChanges(otherUploadedVideos[index]);
+                for (var index = 0; index < _uploadedVideos.Count; index++)
+                {
+                    _uploadedVideos[index].LoadChanges(otherUploadedVideos[index]);
+                }
             }
-
-            _changed = false;
         }
 
         public VideoData NextFrom(VideoData videoData)
         {
-            return _uploadedVideos[(_uploadedVideos.IndexOf(videoData) + 1) % _uploadedVideos.Count];
+            var index = _uploadedVideos.IndexOf(videoData);
+            for (var offset = 1; offset <= _uploadedVideos.Count; offset++)
+            {
+                var data = _uploadedVideos[(index + offset) % _uploadedVideos.Count];
+                if (!data.IsInvalid)
+                {
+                    return data;
+                }
+            }
+
+            return null;
         }
 
         public void Add(VideoData videoData)
