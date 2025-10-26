@@ -1,9 +1,10 @@
 ﻿using ScriptableObjects;
 using TMPro;
+using UI.Views.Core;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UI.Views.Rewards
+namespace UI.Views.Capsule.Subviews
 {
     public sealed class RewardUIView : MonoBehaviour
     {

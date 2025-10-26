@@ -6,20 +6,19 @@ namespace Gameplay
 {
     public sealed class Capsule : MonoBehaviour
     {
-        private const Single LoopSeconds = 0.5F;
-
         private MotionHandle _motionHandle;
+
+        [SerializeField]
+        private GameObject _view;
+        [SerializeField]
+        private Single _speed = 2.0F;
 
         public void Spin()
         {
-            _motionHandle = LMotion.Create(0.0F, 180.0F, LoopSeconds)
-                .WithLoops(-1)
-                .Bind(transform, (eulerAngleY, currentTransform) =>
-                {
-                    var eulerAngles = currentTransform.eulerAngles;
-                    eulerAngles.y = eulerAngleY;
-                    currentTransform.eulerAngles = eulerAngles;
-                });
+            _motionHandle = LMotion.Create(0.0F, 1.0F, 1.0F)
+                .WithLoops(-1, LoopType.Incremental)
+                .WithEase(Ease.InSine)
+                .Bind(progress => _view.transform.RotateAround(_view.transform.position, _view.transform.up, Mathf.Min(1.0F, progress) * Time.deltaTime * _speed));
         }
 
         public void Stop(Single duration, Action onComplete)
@@ -29,15 +28,10 @@ namespace Gameplay
                 _motionHandle.Cancel();
             }
 
-            _motionHandle = LMotion.Create(transform.eulerAngles.y, transform.eulerAngles.y + ((duration / LoopSeconds) * 180.0F), duration)
+            _motionHandle = LMotion.Create(1.0F, 0.0F, duration)
                 .WithOnComplete(onComplete)
                 .WithEase(Ease.OutSine)
-                .Bind(transform, static (eulerAngleY, currentTransform) =>
-                {
-                    var localEulerAngles = currentTransform.localEulerAngles;
-                    localEulerAngles.y = eulerAngleY;
-                    currentTransform.localEulerAngles = localEulerAngles;
-                });
+                .Bind(progress => _view.transform.RotateAround(_view.transform.position, _view.transform.up, progress * Time.deltaTime * _speed));
         }
     }
 }

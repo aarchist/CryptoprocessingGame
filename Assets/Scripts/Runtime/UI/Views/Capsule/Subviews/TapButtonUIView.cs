@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace UI.Views.Capsule.Subviews
 {
-    public sealed class TapButtonUIView : UIViewBehaviour
+    public sealed class TapButtonUIView : FadeUIViewBehaviour
     {
         [SerializeField]
         private TextMeshProUGUI _textMeshProUGUI;

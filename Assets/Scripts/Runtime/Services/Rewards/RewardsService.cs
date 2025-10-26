@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Data.Game;
 using Data.Reward;
 using Services.Config.Core;
 using Services.Data.Core;
@@ -12,14 +13,16 @@ namespace Services.Rewards
     public sealed class RewardsService : IRewardsService
     {
         private RewardsData _rewardsData;
+        private GameData _gameData;
 
         private IEnumerable<RewardData> ActiveRewards => _rewardsData.Rewards.Where(reward => reward.IsActive);
 
-        private Single TotalWeight => ActiveRewards.Sum(reward => reward.Weight);
+        private Single TotalWeight => ActiveRewards.Sum(reward => reward.Weight) + _gameData.LossWeight;
 
         public void Initialize()
         {
             _rewardsData = ServiceLocator.Get<IDataService>().Get<RewardsData>();
+            _gameData = ServiceLocator.Get<IDataService>().Get<GameData>();
             var rewardConfigs = ServiceLocator.Get<IConfigService>().RewardConfigs;
             _rewardsData.RemoveAllExcept(rewardConfigs.Select(rewardConfig => rewardConfig.ID).ToList());
             foreach (var rewardConfig in rewardConfigs)
@@ -31,6 +34,7 @@ namespace Services.Rewards
 
                 _rewardsData.Add(rewardConfig.CreateData());
             }
+
             _rewardsData.Save();
 
             ServiceLocator.Get<IDataService>().Get<RewardsData>();
@@ -50,7 +54,7 @@ namespace Services.Rewards
                 }
             }
 
-            return _rewardsData.Rewards[^1].ID;
+            return null;
         }
 
         public void Dispose()

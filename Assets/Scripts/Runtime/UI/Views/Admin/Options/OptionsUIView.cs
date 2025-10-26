@@ -26,6 +26,8 @@ namespace UI.Views.Admin.Options
         [SerializeField]
         private ChangedDataTextUIView _changedDataTextUIView;
         [SerializeField]
+        private Int32PropertyUIView _lossWeightProperty;
+        [SerializeField]
         private Button _resetButton;
         [SerializeField]
         private Button _saveButton;
@@ -42,6 +44,7 @@ namespace UI.Views.Admin.Options
             _inactiveDurationProperty.Setup(() => _gameData.InactiveSeconds, duration => _gameData.InactiveSeconds = duration);
             _keyCodePropertyUIView.Setup(() => _gameData.GameplayButtonKey, keyCode => _gameData.GameplayButtonKey = keyCode);
             _attemptsCountProperty.Setup(() => _gameData.AttemptsCount, count => _gameData.AttemptsCount = count);
+            _lossWeightProperty.Setup(() => _gameData.LossWeight, weight => _gameData.LossWeight = weight);
             _changedDataTextUIView.Setup(_gameData);
             _trackedData = new List<IData> { _gameData, dataService.Get<RewardsData>(), dataService.Get<UploadedVideosData>() };
             UpdateView();

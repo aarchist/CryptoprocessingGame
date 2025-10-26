@@ -2,6 +2,7 @@
 using Services.Data.Core;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Object = System.Object;
 
 namespace Data.Game
 {
@@ -16,6 +17,8 @@ namespace Data.Game
         private Int32 _capsuleStopDuration = 4;
         [SerializeField]
         private Int32 _attemptsCount = 3;
+        [SerializeField]
+        private Int32 _loseWeight;
 
         private Boolean _changed;
 
@@ -65,6 +68,16 @@ namespace Data.Game
             }
         }
 
+        public Int32 LossWeight
+        {
+            get => _loseWeight;
+            set
+            {
+                _loseWeight = value;
+                _changed = true;
+            }
+        }
+
         protected override void LoadChanges(IData other)
         {
             if (other is not GameData gameData)
@@ -76,6 +89,7 @@ namespace Data.Game
             _inactiveSeconds = gameData._inactiveSeconds;
             _attemptsCount = gameData._attemptsCount;
             _capsuleStopDuration = gameData._capsuleStopDuration;
+            _loseWeight = gameData._loseWeight;
             _changed = false;
         }
     }
