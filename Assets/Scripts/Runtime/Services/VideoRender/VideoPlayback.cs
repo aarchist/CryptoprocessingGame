@@ -7,9 +7,8 @@ namespace Services.VideoRender
 {
     public sealed class VideoPlayback
     {
-        private readonly RenderTexture _renderTexture = new(1920, 1080, 24);
+        private readonly RenderTexture _renderTexture = new(768, 1344, 24);
         private readonly VideoPlayer _videoPlayer;
-        private IRenderOutput _output;
         private Boolean _hasError;
 
         public VideoPlayback(GameObject gameObject)

@@ -1,20 +1,46 @@
 ﻿using System;
+using System.Collections.Generic;
 using UI.Views.Capsule.Subviews;
 using UI.Views.Core;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UI.Views.Capsule
 {
     public sealed class CapsuleUIView : UIViewBehaviour
     {
+        private readonly List<Image> _attemptsImages = new();
+
         [SerializeField]
         private ShowRewardsUIView _showRewardsUIView;
         [SerializeField]
         private GiveRewardUIView _giveRewardUIView;
         [SerializeField]
         private TapButtonUIView _tapButtonUIView;
+        [SerializeField]
+        private RectTransform _attemptsContent;
+        [SerializeField]
+        private Image _attemptPrefab;
+        [SerializeField]
+        private RawImage _renderOutput;
 
         private UIViewBehaviour _showedUIView;
+
+        public Int32 ShowedAttempts
+        {
+            set
+            {
+                while (_attemptsImages.Count < value)
+                {
+                    _attemptsImages.Add(Instantiate(_attemptPrefab, _attemptsContent));
+                }
+
+                for (var index = 0; index < _attemptsImages.Count; index++)
+                {
+                    _attemptsImages[index].enabled = index < value;
+                }
+            }
+        }
 
         public override void Initialize()
         {
@@ -29,6 +55,7 @@ namespace UI.Views.Capsule
             _giveRewardUIView.Setup(rewardID);
             _giveRewardUIView.Show();
             _showedUIView = _giveRewardUIView;
+            _renderOutput.enabled = false;
         }
 
         public void ShowShowRewards()
@@ -36,6 +63,7 @@ namespace UI.Views.Capsule
             Clear();
             _showRewardsUIView.Show();
             _showedUIView = _showRewardsUIView;
+            _renderOutput.enabled = false;
         }
 
         public void ShowTapButton()
@@ -43,6 +71,7 @@ namespace UI.Views.Capsule
             Clear();
             _tapButtonUIView.Show();
             _showedUIView = _tapButtonUIView;
+            _renderOutput.enabled = true;
         }
 
         public void Clear()

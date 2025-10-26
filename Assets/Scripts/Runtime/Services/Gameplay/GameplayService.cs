@@ -4,6 +4,8 @@ using Gameplay;
 using Services.Gameplay.Core;
 using Services.Gameplay.StateMachine.States;
 using Services.Gameplay.StateMachine.States.Core;
+using Services.UIView.Core;
+using UI.Views.Capsule;
 using UnityEngine;
 
 namespace Services.Gameplay
@@ -15,10 +17,19 @@ namespace Services.Gameplay
 
         private Dictionary<Type, GameState> _availableStates;
         private IGameState _activeState = IGameState.Dummy;
+        private Int32 _attemptsCount;
 
         public Capsule Capsule => _capsule;
 
-        public Int32 AttemptsCount;
+        public Int32 AttemptsCount
+        {
+            get => _attemptsCount;
+            set
+            {
+                _attemptsCount = value;
+                ServiceLocator.Get<IUIViewService>().Get<CapsuleUIView>().ShowedAttempts = _attemptsCount;
+            }
+        }
 
         public void Initialize()
         {

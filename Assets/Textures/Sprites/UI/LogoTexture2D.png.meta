@@ -1,0 +1,264 @@
+fileFormatVersion: 2
+guid: f9c475620d697844986912426c7ee2b7
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -543123333966261490
+    second: Logo (1)_0
+  - first:
+      213: -6693711425053514420
+    second: Logo (1)_1
+  - first:
+      213: -6328204660107273224
+    second: Logo (1)_2
+  - first:
+      213: -2538611501236629027
+    second: Logo (1)_3
+  - first:
+      213: 6585639216680539231
+    second: Logo (1)_4
+  - first:
+      213: -4818173098851281333
+    second: Logo (1)_5
+  - first:
+      213: -2535852677954249327
+    second: Logo (1)_6
+  - first:
+      213: -4664290019067086797
+    second: Logo (1)_7
+  - first:
+      213: -2166261498661967385
+    second: Logo (1)_8
+  - first:
+      213: 3706646080792442755
+    second: Logo (1)_9
+  - first:
+      213: -902290269065075691
+    second: Logo (1)_10
+  - first:
+      213: -3884912819652899360
+    second: Logo (1)_11
+  - first:
+      213: 120617149115812834
+    second: Logo (1)_12
+  - first:
+      213: -2087736920131761937
+    second: Logo (1)_13
+  - first:
+      213: -1086079466439846600
+    second: Logo (1)_14
+  - first:
+      213: -3004668210576629427
+    second: Logo (1)_15
+  - first:
+      213: -8487349212796118029
+    second: Logo (1)_16
+  - first:
+      213: -2114240360517048499
+    second: Logo (1)_17
+  - first:
+      213: -5213536113292961511
+    second: Logo (1)_18
+  - first:
+      213: -649548846295794301
+    second: Logo (1)_19
+  - first:
+      213: -7315847086248196633
+    second: Logo (1)_20
+  - first:
+      213: -9140597527298773748
+    second: Logo (1)_21
+  - first:
+      213: 4097766776156054941
+    second: Logo (1)_22
+  - first:
+      213: 4031187557658444219
+    second: Logo (1)_23
+  - first:
+      213: -2467912524754573020
+    second: Logo (1)_24
+  - first:
+      213: -3702527712146885650
+    second: Logo (1)_25
+  - first:
+      213: 2014512245286614365
+    second: Logo (1)_26
+  - first:
+      213: -27995479462810274
+    second: Logo (1)_27
+  - first:
+      213: 2055026737682120657
+    second: Logo (1)_28
+  - first:
+      213: 4316415382805351026
+    second: Logo (1)_29
+  - first:
+      213: 5583714997559564509
+    second: Logo (1)_30
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: LogoSprite
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 432
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e0317b194307678f0800000000000000
+      internalID: -543123333966261490
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 6e1ee2c72a0cb2c4daf89be599dda761
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Logo (1)_1: -6693711425053514420
+      Logo (1)_10: -902290269065075691
+      Logo (1)_11: -3884912819652899360
+      Logo (1)_12: 120617149115812834
+      Logo (1)_13: -2087736920131761937
+      Logo (1)_14: -1086079466439846600
+      Logo (1)_15: -3004668210576629427
+      Logo (1)_16: -8487349212796118029
+      Logo (1)_17: -2114240360517048499
+      Logo (1)_18: -5213536113292961511
+      Logo (1)_19: -649548846295794301
+      Logo (1)_2: -6328204660107273224
+      Logo (1)_20: -7315847086248196633
+      Logo (1)_21: -9140597527298773748
+      Logo (1)_22: 4097766776156054941
+      Logo (1)_23: 4031187557658444219
+      Logo (1)_24: -2467912524754573020
+      Logo (1)_25: -3702527712146885650
+      Logo (1)_26: 2014512245286614365
+      Logo (1)_27: -27995479462810274
+      Logo (1)_28: 2055026737682120657
+      Logo (1)_29: 4316415382805351026
+      Logo (1)_3: -2538611501236629027
+      Logo (1)_30: 5583714997559564509
+      Logo (1)_4: 6585639216680539231
+      Logo (1)_5: -4818173098851281333
+      Logo (1)_6: -2535852677954249327
+      Logo (1)_7: -4664290019067086797
+      Logo (1)_8: -2166261498661967385
+      Logo (1)_9: 3706646080792442755
+      LogoSprite: -543123333966261490
+      LogoTexture2D_0: -46644861
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
