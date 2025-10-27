@@ -6,8 +6,11 @@ namespace Gameplay
 {
     public sealed class Capsule : MonoBehaviour
     {
+        private static readonly Int32 _spinSpeed = Animator.StringToHash("SpinSpeed");
         private MotionHandle _motionHandle;
 
+        [SerializeField]
+        private Animator _animator;
         [SerializeField]
         private GameObject _view;
         [SerializeField]
@@ -15,10 +18,10 @@ namespace Gameplay
 
         public void Spin()
         {
+            _animator.Play("SpinState");
             _motionHandle = LMotion.Create(0.0F, 1.0F, 1.0F)
-                .WithLoops(-1, LoopType.Incremental)
                 .WithEase(Ease.InSine)
-                .Bind(progress => _view.transform.RotateAround(_view.transform.position, _view.transform.up, Mathf.Min(1.0F, progress) * Time.deltaTime * _speed));
+                .Bind(speed => _animator.SetFloat(_spinSpeed, speed));
         }
 
         public void Stop(Single duration, Action onComplete)
@@ -31,7 +34,17 @@ namespace Gameplay
             _motionHandle = LMotion.Create(1.0F, 0.0F, duration)
                 .WithOnComplete(onComplete)
                 .WithEase(Ease.OutSine)
-                .Bind(progress => _view.transform.RotateAround(_view.transform.position, _view.transform.up, progress * Time.deltaTime * _speed));
+                .Bind(speed => _animator.SetFloat(_spinSpeed, speed));
+        }
+
+        public void ShowRewards()
+        {
+            _animator.Play("ShowRewardsState");
+        }
+
+        public void GiveRewards()
+        {
+            _animator.Play("GiveRewardState");
         }
     }
 }

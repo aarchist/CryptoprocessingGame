@@ -1,5 +1,6 @@
 ﻿using System;
 using Data.Game;
+using Gameplay;
 using Services.Data.Core;
 using Services.Gameplay.StateMachine.States.Core;
 using Services.UIView.Core;
@@ -10,15 +11,15 @@ namespace Services.Gameplay.StateMachine.States
 {
     public sealed class ShowRewardsGameState : GameState
     {
-        private readonly GameplayService _gameplayService;
         private readonly GameData _gameData;
+        private readonly Capsule _capsule;
 
         private Single _inactiveDuration;
 
         public ShowRewardsGameState(GameplayService gameplayService) : base(gameplayService)
         {
-            _gameplayService = gameplayService;
             _gameData = ServiceLocator.Get<IDataService>().Get<GameData>();
+            _capsule = gameplayService.Capsule;
         }
 
         public override void Enter()
@@ -26,6 +27,7 @@ namespace Services.Gameplay.StateMachine.States
             base.Enter();
             ServiceLocator.Get<IUIViewService>().Get<CapsuleUIView>().ShowShowRewards();
             _inactiveDuration = 0.0F;
+            _capsule.ShowRewards();
         }
 
         public override void Update()

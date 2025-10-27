@@ -55,7 +55,6 @@ namespace UI.Views.Capsule
             _giveRewardUIView.Setup(rewardID);
             _giveRewardUIView.Show();
             _showedUIView = _giveRewardUIView;
-            _renderOutput.enabled = false;
         }
 
         public void ShowShowRewards()
@@ -63,7 +62,6 @@ namespace UI.Views.Capsule
             Clear();
             _showRewardsUIView.Show();
             _showedUIView = _showRewardsUIView;
-            _renderOutput.enabled = false;
         }
 
         public void ShowTapButton()
@@ -71,7 +69,6 @@ namespace UI.Views.Capsule
             Clear();
             _tapButtonUIView.Show();
             _showedUIView = _tapButtonUIView;
-            _renderOutput.enabled = true;
         }
 
         public void Clear()

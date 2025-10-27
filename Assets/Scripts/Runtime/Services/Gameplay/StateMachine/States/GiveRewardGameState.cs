@@ -29,6 +29,7 @@ namespace Services.Gameplay.StateMachine.States
             _inactiveDuration = 0.0F;
             var randomID = ServiceLocator.Get<IRewardsService>().RandomRewardID();
             ServiceLocator.Get<IUIViewService>().Get<CapsuleUIView>().ShowGiveReward(randomID);
+            _gameplayService.Capsule.GiveRewards();
         }
 
         public override void Update()
