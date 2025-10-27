@@ -1,29 +1,9 @@
 fileFormatVersion: 2
-guid: 8335749fb7ed30a4783d6b02e7213b53
+guid: e2ce72617c6d4a44fb41752f547a6094
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Basic Carpaint.001
-    second: {fileID: 2100000, guid: 1e38a69cdadc17b4fa378f6bb2c1e5ab, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Glass Thinwalled 001.001
-    second: {fileID: 2100000, guid: ee8d2ec8a7b31184dbbc2a53f90fc51e, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Metal Aluminium 001.001
-    second: {fileID: 2100000, guid: a33bac03347d6d540a4666b69dc03b2c, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: RS Standard.001
-    second: {fileID: 2100000, guid: 68f75dd075a0e164b964afe2ed85c910, type: 2}
+  externalObjects: {}
   materials:
     materialImportMode: 2
     materialName: 0
