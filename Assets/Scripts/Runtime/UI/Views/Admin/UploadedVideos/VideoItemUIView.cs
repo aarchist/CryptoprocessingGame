@@ -115,7 +115,7 @@ namespace UI.Views.Admin.UploadedVideos
             }
 
             ShowPlaybackProgress();
-            if (_playback.LoopProgress >= 0.99F)
+            if (_playback.LoopProgress >= 0.98F)
             {
                 ActiveState = Completed;
             }

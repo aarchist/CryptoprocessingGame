@@ -97,6 +97,7 @@ namespace UI.Views.Admin.Options
             _inactiveDurationProperty.Actualize();
             _attemptsCountProperty.Actualize();
             _keyCodePropertyUIView.Actualize();
+            _lossWeightProperty.Actualize();
         }
     }
 }

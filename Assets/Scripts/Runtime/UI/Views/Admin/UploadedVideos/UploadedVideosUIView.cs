@@ -8,6 +8,7 @@ using UI.Views.Core;
 using UI.Views.VideoOutput;
 using UnityEngine;
 using UnityEngine.UI;
+using static UI.Views.Admin.UploadedVideos.VideoItemUIView.State;
 
 namespace UI.Views.Admin.UploadedVideos
 {
@@ -33,10 +34,12 @@ namespace UI.Views.Admin.UploadedVideos
                 var videoOutput = ServiceLocator.Get<IUIViewService>().Get<VideoOutputUIView>();
                 if (value)
                 {
+                    _videoItemControlsUIView.Play();
                     videoOutput.Show();
                 }
                 else
                 {
+                    _videoItemControlsUIView.Pause();
                     videoOutput.Hide();
                 }
             }

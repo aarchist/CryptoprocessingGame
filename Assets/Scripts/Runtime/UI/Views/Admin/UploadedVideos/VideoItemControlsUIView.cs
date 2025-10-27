@@ -106,6 +106,16 @@ namespace UI.Views.Admin.UploadedVideos
             _next = next;
         }
 
+        public void Play()
+        {
+            _selectedVideoItemUIView.ActiveState = Played;
+        }
+
+        public void Pause()
+        {
+            _selectedVideoItemUIView.ActiveState = Paused;
+        }
+
         private void OnEnable()
         {
             _replaceFileButton.onClick.AddListener(OnReplaceButtonClicked);
