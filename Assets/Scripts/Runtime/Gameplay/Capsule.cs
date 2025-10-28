@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Cysharp.Threading.Tasks;
 using LitMotion;
 using ScriptableObjects;
@@ -34,6 +33,10 @@ namespace Gameplay
         private SplineContainer _splineContainer;
         [SerializeField]
         private List<GameObject> _rewards;
+        [SerializeField]
+        private GameObject _lossGameObject;
+        [SerializeField]
+        private RewardConfig _lossRewardConfig;
         [SerializeField]
         private List<RewardConfig> _ids;
         [SerializeField]
@@ -82,7 +85,7 @@ namespace Gameplay
                     _vignette.active = false;
                 }).Bind(progress =>
                 {
-                    _depthOfField.focusDistance.value = Mathf.Lerp(0.5F, 10.0F, progress);
+                    _depthOfField.focusDistance.value = Mathf.Lerp(0.4F, 10.0F, progress);
                     _vignette.intensity.value = 1.0F - progress;
                 });
             }
@@ -141,6 +144,10 @@ namespace Gameplay
 
         private RewardConfig GetConfigWithID(String id)
         {
+            if (id == null)
+            {
+                return _lossRewardConfig;
+            }
             return _ids.Find(config => config.ID == id);
         }
 
@@ -168,6 +175,10 @@ namespace Gameplay
 
         private GameObject GetReward(RewardConfig rewardConfig)
         {
+            if (rewardConfig == _lossRewardConfig)
+            {
+                return _lossGameObject;
+            }
             return _rewards[_ids.IndexOf(rewardConfig)];
         }
 
@@ -210,7 +221,7 @@ namespace Gameplay
 
             LMotion.Create(0.0F, 1.0F, seconds).Bind(progress =>
             {
-                _depthOfField.focusDistance.value = Mathf.Lerp(10.0F, 0.5F, progress);
+                _depthOfField.focusDistance.value = Mathf.Lerp(10.0F, 0.4F, progress);
                 _vignette.intensity.value = progress;
             });
 

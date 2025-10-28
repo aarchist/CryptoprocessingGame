@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rewardData:
     _isActive: 1
-    _weight: 1
+    _weight: 20
     _id: backpack_coin
-  _name: Backpack
+  _name: Soft laptop backpack

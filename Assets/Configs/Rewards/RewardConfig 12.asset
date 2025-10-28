@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rewardData:
     _isActive: 1
-    _weight: 1
+    _weight: 5
     _id: usdt_1000_coin
   _name: USDT 1000

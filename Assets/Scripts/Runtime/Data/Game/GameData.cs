@@ -18,7 +18,7 @@ namespace Data.Game
         [SerializeField]
         private Int32 _attemptsCount = 3;
         [SerializeField]
-        private Int32 _loseWeight;
+        private Int32 _loseWeight = 1050;
 
         private Boolean _changed;
 

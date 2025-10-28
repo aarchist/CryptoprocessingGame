@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rewardData:
     _isActive: 1
-    _weight: 1
+    _weight: 50
     _id: lipstick_coin
-  _name: Lipstick
+  _name: Laptop pouch

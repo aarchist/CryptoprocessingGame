@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rewardData:
     _isActive: 1
-    _weight: 1
+    _weight: 80
     _id: magic_coin
-  _name: Magic
+  _name: Headphone cleaning pen

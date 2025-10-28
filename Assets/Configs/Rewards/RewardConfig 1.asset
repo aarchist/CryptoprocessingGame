@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rewardData:
     _isActive: 1
-    _weight: 1
+    _weight: 15
     _id: energy_coin
-  _name: Energy
+  _name: 'Power bank '
