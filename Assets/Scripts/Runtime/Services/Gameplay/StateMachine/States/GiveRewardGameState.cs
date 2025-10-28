@@ -62,6 +62,7 @@ namespace Services.Gameplay.StateMachine.States
             base.Exit();
 
             ServiceLocator.Get<IUIViewService>().Get<CapsuleUIView>().Clear();
+            _gameplayService.Capsule.ClearReward();
         }
     }
 }

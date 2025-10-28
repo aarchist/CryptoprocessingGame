@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using LitMotion;
 using UnityEngine;
@@ -10,7 +9,6 @@ namespace Gameplay
 {
     public sealed class Capsule : MonoBehaviour
     {
-        private static readonly Int32 _spinSpeed = Animator.StringToHash("SpinSpeed");
         private MotionHandle _motionHandle;
 
         [SerializeField]
@@ -33,18 +31,27 @@ namespace Gameplay
         private List<GameObject> _rewards;
         [SerializeField]
         private List<String> _ids;
+        [SerializeField]
+        private Single _rewardRotationSpeed = 2.0F;
 
         private GameObject _createdReward;
         private Boolean _spinIsPrepared;
         private Boolean _rewardGiven;
 
-        public async void Spin()
+        public void ClearReward()
         {
-            if (_createdReward)
+            var reward = _createdReward;
+            if (reward)
             {
-                Destroy(_createdReward);
+                LMotion.Create(reward.transform.localScale, Vector3.zero, 0.25F).WithEase(Ease.InOutSine).WithOnComplete(() => Destroy(reward)).Bind(scale => reward.transform.localScale = scale);
+
                 _createdReward = null;
             }
+        }
+
+        public async void Spin()
+        {
+            ClearReward();
 
             if (!_spinIsPrepared)
             {
@@ -97,12 +104,26 @@ namespace Gameplay
             _rewardGiven = true;
             await UniTask.WaitForSeconds(0.583F);
             _createdReward = Instantiate(_reward);
+            var createdReward = _createdReward;
             _createdReward.transform.localScale = Vector3.one * 5.0F;
-            var startRotation = _createdReward.transform.rotation;
-            LMotion.Create(0.0F, 1.0F, 0.5F).Bind(progress =>
+            var startRotation = createdReward.transform.rotation;
+            LMotion.Create(0.0F, 1.0F, 0.5F).WithEase(Ease.OutSine).WithOnComplete(() =>
             {
-                _createdReward.transform.rotation = Quaternion.Lerp(startRotation, _targetTransform.rotation, progress);
-                _createdReward.transform.position = _splineContainer.EvaluatePosition(progress);
+                LMotion.Create(0.0F, 1.0F, 0.5F)
+                    .WithLoops(-1, LoopType.Incremental)
+                    .Bind(progress =>
+                    {
+                        if (!createdReward)
+                        {
+                            return;
+                        }
+
+                        createdReward.transform.RotateAround(createdReward.transform.position, Vector3.up, Mathf.Min(1.0F, progress) * Time.deltaTime * _rewardRotationSpeed);
+                    });
+            }).Bind(progress =>
+            {
+                createdReward.transform.rotation = Quaternion.Lerp(startRotation, _targetTransform.rotation, progress);
+                createdReward.transform.position = _splineContainer.EvaluatePosition(progress);
             });
             _rewardGiven = true;
         }
