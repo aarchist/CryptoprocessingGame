@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using LitMotion;
 using UnityEngine;
+using UnityEngine.Splines;
 
 namespace Gameplay
 {
@@ -15,28 +16,43 @@ namespace Gameplay
         private Animator _animator;
         [SerializeField]
         private Single _speed = 2.0F;
-        private Boolean _spinIsPrepared;
+        [SerializeField]
+        private Transform _rotationCenter;
+        [SerializeField]
+        private GameObject _reward;
+        [SerializeField]
+        private Transform _targetTransform;
+        [SerializeField]
+        private SplineContainer _splineContainer;
 
-        public async Task Spin()
+        private GameObject _createdReward;
+        private Boolean _spinIsPrepared;
+        private Boolean _rewardGiven;
+
+        public async void Spin()
         {
+            if (_createdReward)
+            {
+                Destroy(_createdReward);
+                _createdReward = null;
+            }
+
             if (!_spinIsPrepared)
             {
                 _spinIsPrepared = true;
                 _animator.Play("PrepareSpin");
                 await UniTask.WaitForSeconds(0.967F);
             }
-
-            var spinStarted = false;
-            _motionHandle = LMotion.Create(0.0F, 1.0F, 0.5F).WithEase(Ease.OutSine).Bind(async speed =>
+            else
             {
-                if (!spinStarted)
-                {
-                    spinStarted = true;
-                    _animator.Play("SpinState");
-                }
+                _animator.Play("CloseState");
+                await UniTask.WaitForSeconds(0.583F);
+            }
 
-                _animator.SetFloat(_spinSpeed, speed);
-            });
+            _motionHandle = LMotion.Create(0.0F, 1.0F, 1.0F)
+                .WithLoops(-1, LoopType.Incremental)
+                .WithEase(Ease.OutSine)
+                .Bind(progress => _rotationCenter.RotateAround(_rotationCenter.position, _rotationCenter.up, Mathf.Min(1.0F, progress) * Time.deltaTime * _speed));
         }
 
         public void Stop(Single duration, Action onComplete)
@@ -49,7 +65,7 @@ namespace Gameplay
             _motionHandle = LMotion.Create(1.0F, 0.0F, duration)
                 .WithOnComplete(onComplete)
                 .WithEase(Ease.OutSine)
-                .Bind(speed => _animator.SetFloat(_spinSpeed, speed));
+                .Bind(progress => _rotationCenter.transform.RotateAround(_rotationCenter.transform.position, _rotationCenter.transform.up, progress * Time.deltaTime * _speed));
         }
 
         public void ShowRewards()
@@ -58,9 +74,19 @@ namespace Gameplay
             _spinIsPrepared = false;
         }
 
-        public void GiveRewards()
+        public async void GiveRewards()
         {
             _animator.Play("GiveRewardState");
+            _rewardGiven = true;
+            await UniTask.WaitForSeconds(0.583F);
+            _createdReward = Instantiate(_reward);
+            var startRotation = _createdReward.transform.rotation;
+            LMotion.Create(0.0F, 1.0F, 0.5F).Bind(progress =>
+            {
+                _createdReward.transform.rotation = Quaternion.Lerp(startRotation, _targetTransform.rotation, progress);
+                _createdReward.transform.position = _splineContainer.EvaluatePosition(progress);
+            });
+            _rewardGiven = true;
         }
     }
 }
