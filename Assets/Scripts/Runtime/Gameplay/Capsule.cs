@@ -97,6 +97,7 @@ namespace Gameplay
             _rewardGiven = true;
             await UniTask.WaitForSeconds(0.583F);
             _createdReward = Instantiate(_reward);
+            _createdReward.transform.localScale = Vector3.one * 5.0F;
             var startRotation = _createdReward.transform.rotation;
             LMotion.Create(0.0F, 1.0F, 0.5F).Bind(progress =>
             {

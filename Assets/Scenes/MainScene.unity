@@ -9510,7 +9510,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 1f06a216c6039a54eb0468a1135b0aa2, type: 2}
+  - {fileID: 2100000, guid: 31623239e739d9f42867eb7ef55b63a3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -10171,9 +10171,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _animator: {fileID: 52445664}
   _speed: 450
+  _capsuleSpeed: 450
   _rotationCenter: {fileID: 2121190028}
   _capsuleRotationCenter: {fileID: 52445663}
-  _reward: {fileID: 9027748565215300258}
+  _reward: {fileID: 4866278036713518326}
   _targetTransform: {fileID: 1939808876}
   _splineContainer: {fileID: 1218105188}
   _rewards: []
@@ -14030,7 +14031,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31623239e739d9f42867eb7ef55b63a3, type: 2}
+  - {fileID: 2100000, guid: 1f06a216c6039a54eb0468a1135b0aa2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
