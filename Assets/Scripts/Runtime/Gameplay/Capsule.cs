@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using LitMotion;
 using UnityEngine;
 
@@ -15,25 +17,19 @@ namespace Gameplay
         private Single _speed = 2.0F;
         private Boolean _spinIsPrepared;
 
-        public void Spin()
+        public async Task Spin()
         {
-            var motionBuilder = LMotion.Create(0.0F, 1.0F, 0.5F).WithEase(Ease.OutSine);
-
             if (!_spinIsPrepared)
             {
                 _spinIsPrepared = true;
-                _animator.Play("PrepareSpin");
-                Debug.Log("prepare");
-                motionBuilder.WithDelay(0.967F, DelayType.FirstLoop, false);
+                await UniTask.WaitForSeconds(0.967F);
             }
 
             var spinStarted = false;
-            _motionHandle = motionBuilder.Bind(speed =>
+            _motionHandle = LMotion.Create(0.0F, 1.0F, 0.5F).WithEase(Ease.OutSine).Bind(async speed =>
             {
-             
                 if (!spinStarted)
                 {
-                    Debug.Log("star");
                     spinStarted = true;
                     _animator.Play("SpinState");
                 }
