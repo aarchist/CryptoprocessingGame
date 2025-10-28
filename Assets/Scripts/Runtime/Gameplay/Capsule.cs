@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using LitMotion;
@@ -24,6 +25,10 @@ namespace Gameplay
         private Transform _targetTransform;
         [SerializeField]
         private SplineContainer _splineContainer;
+        [SerializeField]
+        private List<GameObject> _rewards;
+        [SerializeField]
+        private List<String> _ids;
 
         private GameObject _createdReward;
         private Boolean _spinIsPrepared;
