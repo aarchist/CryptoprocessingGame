@@ -106,7 +106,7 @@ namespace Gameplay
 
             _motionHandle = LMotion.Create(1.0F, 0.0F, duration)
                 .WithEase(Ease.OutSine)
-                .Bind(progress => { _capsuleRotationCenter.transform.RotateAround(_capsuleRotationCenter.transform.position, _capsuleRotationCenter.transform.up, progress * Time.deltaTime * _capsuleSpeed); });
+                .Bind(progress => _capsuleRotationCenter.transform.RotateAround(_capsuleRotationCenter.transform.position, _capsuleRotationCenter.transform.up, progress * Time.deltaTime * _capsuleSpeed));
 
             await LMotion.Create(1.0F, 0.1F, duration).Bind(progress => _animator.SetFloat("BurstSpeed", progress));
 
@@ -125,6 +125,7 @@ namespace Gameplay
 
         public void ShowRewards()
         {
+            _animator.Play("EmptyState");
         }
 
         public async void GiveRewards()
