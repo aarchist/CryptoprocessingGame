@@ -15,7 +15,5 @@ MonoBehaviour:
   _rewardData:
     _isActive: 1
     _weight: 1
-    _id: reward_id_9
-  _position: {x: 0, y: -199}
-  _icon: {fileID: 0}
-  _name: USDT 1000
+    _id: magic_coin
+  _name: Magic

@@ -15,7 +15,5 @@ MonoBehaviour:
   _rewardData:
     _isActive: 1
     _weight: 1
-    _id: reward_id_1
-  _position: {x: -407.5, y: 329}
-  _icon: {fileID: 0}
-  _name: USDT 1000
+    _id: energy_coin
+  _name: Energy
