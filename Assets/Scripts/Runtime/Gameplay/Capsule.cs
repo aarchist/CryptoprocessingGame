@@ -22,6 +22,7 @@ namespace Gameplay
             if (!_spinIsPrepared)
             {
                 _spinIsPrepared = true;
+                _animator.Play("PrepareSpin");
                 await UniTask.WaitForSeconds(0.967F);
             }
 
