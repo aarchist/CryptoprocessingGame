@@ -12,16 +12,34 @@ namespace Gameplay
         [SerializeField]
         private Animator _animator;
         [SerializeField]
-        private GameObject _view;
-        [SerializeField]
         private Single _speed = 2.0F;
+        private Boolean _spinIsPrepared;
 
         public void Spin()
         {
-            _animator.Play("SpinState");
-            _motionHandle = LMotion.Create(0.0F, 1.0F, 1.0F)
-                .WithEase(Ease.InSine)
-                .Bind(speed => _animator.SetFloat(_spinSpeed, speed));
+            var motionBuilder = LMotion.Create(0.0F, 1.0F, 0.5F).WithEase(Ease.OutSine);
+
+            if (!_spinIsPrepared)
+            {
+                _spinIsPrepared = true;
+                _animator.Play("PrepareSpin");
+                Debug.Log("prepare");
+                motionBuilder.WithDelay(0.967F, DelayType.FirstLoop, false);
+            }
+
+            var spinStarted = false;
+            _motionHandle = motionBuilder.Bind(speed =>
+            {
+             
+                if (!spinStarted)
+                {
+                    Debug.Log("star");
+                    spinStarted = true;
+                    _animator.Play("SpinState");
+                }
+
+                _animator.SetFloat(_spinSpeed, speed);
+            });
         }
 
         public void Stop(Single duration, Action onComplete)
@@ -40,6 +58,7 @@ namespace Gameplay
         public void ShowRewards()
         {
             _animator.Play("ShowRewardsState");
+            _spinIsPrepared = false;
         }
 
         public void GiveRewards()

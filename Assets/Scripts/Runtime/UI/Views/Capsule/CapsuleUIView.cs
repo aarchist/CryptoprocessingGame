@@ -21,8 +21,6 @@ namespace UI.Views.Capsule
         private RectTransform _attemptsContent;
         [SerializeField]
         private Image _attemptPrefab;
-        [SerializeField]
-        private RawImage _renderOutput;
 
         private UIViewBehaviour _showedUIView;
 

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 58e1ce84c721da04280423df7e75177d
+guid: 40151e28b46169a48bfea42057e65a7e
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -31,7 +31,7 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Animation_Blend
+      name: Scene
       takeName: Scene
       internalID: -623603649343465320
       firstFrame: 225
