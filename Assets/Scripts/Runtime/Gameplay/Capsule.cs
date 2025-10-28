@@ -176,7 +176,7 @@ namespace Gameplay
             _animator.Play("EmptyState");
         }
 
-        public async void GiveRewards()
+        public async void GiveRewards(Action onComplete)
         {
             ServiceLocator.Get<IUIViewService>().Get<CapsuleUIView>().ShowGiveReward(_rewardTargetID);
             await LMotion.Create(0.0F, 1.0F, 0.5F).Bind(progress => _animator.SetFloat(_openProgressParameter, progress));
@@ -187,7 +187,8 @@ namespace Gameplay
             var startRotation = createdReward.transform.rotation;
             _depthOfField.active = true;
             _vignette.active = true;
-            LMotion.Create(0.0F, 1.0F, 0.5F).WithEase(Ease.OutSine).WithOnComplete(() =>
+            var seconds = 0.5F;
+            LMotion.Create(0.0F, 1.0F, seconds).WithEase(Ease.OutSine).WithOnComplete(() =>
             {
                 LMotion.Create(0.0F, 1.0F, 0.5F)
                     .WithLoops(-1, LoopType.Incremental)
@@ -207,11 +208,14 @@ namespace Gameplay
                 createdReward.transform.position = _splineContainer.EvaluatePosition(progress);
             });
 
-            LMotion.Create(0.0F, 1.0F, 0.5F).Bind(progress =>
+            LMotion.Create(0.0F, 1.0F, seconds).Bind(progress =>
             {
                 _depthOfField.focusDistance.value = Mathf.Lerp(10.0F, 0.5F, progress);
                 _vignette.intensity.value = progress;
             });
+
+            await UniTask.WaitForSeconds(seconds);
+            onComplete?.Invoke();
         }
     }
 }

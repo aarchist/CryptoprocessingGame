@@ -14,6 +14,7 @@ namespace Services.Gameplay.StateMachine.States
         private readonly GameData _gameData;
 
         private Single _inactiveDuration;
+        private Boolean _rewardIsShown;
 
         public GiveRewardGameState(GameplayService gameplayService) : base(gameplayService)
         {
@@ -26,12 +27,18 @@ namespace Services.Gameplay.StateMachine.States
             base.Enter();
 
             _inactiveDuration = 0.0F;
-            _gameplayService.Capsule.GiveRewards();
+            _rewardIsShown = false;
+            _gameplayService.Capsule.GiveRewards(() => _rewardIsShown = true);
         }
 
         public override void Update()
         {
             base.Update();
+
+            if (!_rewardIsShown)
+            {
+                return;
+            }
 
             _inactiveDuration += Time.deltaTime;
             if (_inactiveDuration >= _gameData.InactiveSeconds)
