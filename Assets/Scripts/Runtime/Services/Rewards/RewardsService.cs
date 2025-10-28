@@ -40,16 +40,8 @@ namespace Services.Rewards
             ServiceLocator.Get<IDataService>().Get<RewardsData>();
         }
 
-        private String _reward;
-
-        public void Set(String rewardID)
-        {
-            _reward = rewardID;
-        }
-
         public String RandomRewardID()
         {
-            return _reward;
             var randomWeight = Random.Range(0.0f, TotalWeight);
             var currentWeight = 0.0f;
 

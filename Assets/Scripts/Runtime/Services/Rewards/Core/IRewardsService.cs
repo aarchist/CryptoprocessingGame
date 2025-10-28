@@ -6,7 +6,5 @@ namespace Services.Rewards.Core
     public interface IRewardsService : IService
     {
         public String RandomRewardID();
-
-        public void Set(String rewardID);
     }
 }

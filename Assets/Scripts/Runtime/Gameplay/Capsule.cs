@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using LitMotion;
 using ScriptableObjects;
 using Services;
 using Services.Rewards.Core;
+using Services.UIView.Core;
+using UI.Views.Capsule;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -39,11 +42,14 @@ namespace Gameplay
         private Volume _volume;
         [SerializeField]
         private Coin _coin;
+        [SerializeField]
+        private AnimationClip _burstAnimationClip;
 
         private GameObject _createdReward;
         private DepthOfField _depthOfField;
         private Vignette _vignette;
         private GameObject _reward;
+        private String _rewardTargetID;
 
         private void Awake()
         {
@@ -60,6 +66,7 @@ namespace Gameplay
 
         public void ClearReward()
         {
+            _rewardTargetID = null;
             var reward = _createdReward;
             if (reward)
             {
@@ -81,11 +88,14 @@ namespace Gameplay
             }
         }
 
+        private Single _rotatedAngle;
+
         public void Spin()
         {
             ClearReward();
 
             _animator.Play("BurstState");
+            _rotatedAngle = 0.0F;
             _motionHandle = LMotion.Create(0.0F, 1.0F, 1.0F)
                 .WithLoops(-1, LoopType.Incremental)
                 .WithEase(Ease.OutSine)
@@ -93,29 +103,67 @@ namespace Gameplay
                 {
                     progress = Mathf.Min(progress, 1.0F);
                     _animator.SetFloat("BurstSpeed", progress);
-                    _capsuleRotationCenter.RotateAround(_capsuleRotationCenter.position, _capsuleRotationCenter.up, _capsuleSpeed * progress * Time.deltaTime);
+                    var angle = _capsuleSpeed * progress * Time.deltaTime;
+                    _rotatedAngle += angle;
+                    _capsuleRotationCenter.RotateAround(_capsuleRotationCenter.position, _capsuleRotationCenter.up, angle);
                 });
         }
 
-        public async void Stop(Single duration, Action onComplete)
+        public async void Stop(Single minDuration, Action onComplete)
         {
             if (_motionHandle.IsActive())
             {
                 _motionHandle.Cancel();
             }
 
-            _motionHandle = LMotion.Create(1.0F, 0.0F, duration)
-                .WithEase(Ease.OutSine)
-                .Bind(progress => _capsuleRotationCenter.transform.RotateAround(_capsuleRotationCenter.transform.position, _capsuleRotationCenter.transform.up, progress * Time.deltaTime * _capsuleSpeed));
+            _rewardTargetID = ServiceLocator.Get<IRewardsService>().RandomRewardID();
+            var config = GetConfigWithID(_rewardTargetID);
+            var remainingSeconds = (minDuration + GetRemainingSeconds(config, minDuration)) * 2.0F;
+            _reward = GetReward(config);
+            LMotion.Create(1.0F, 0.0F, remainingSeconds)
+                .Bind(progress => _animator.SetFloat("BurstSpeed", progress));
 
-            await LMotion.Create(1.0F, 0.1F, duration).Bind(progress => _animator.SetFloat("BurstSpeed", progress));
+            var speed = _capsuleSpeed / 2;
+            var startRotation = _capsuleRotationCenter.rotation;
+            var extraRotation = Mathf.Floor((remainingSeconds * speed) / 360.0F) * 360.0F;
+            var remainingAngle = 360.0F - (_rotatedAngle % 360.0F);
+            _motionHandle = LMotion.Create(0.0F, extraRotation + remainingAngle, (remainingSeconds + (remainingAngle / speed)))
+                .WithEase(Ease.OutCubic)
+                .Bind(angle =>
+                {
+                    _capsuleRotationCenter.rotation = startRotation;
+                    _capsuleRotationCenter.transform.RotateAround(_capsuleRotationCenter.transform.position, _capsuleRotationCenter.transform.up, angle);
+                });
 
-            _coin.LastReward = null;
-            await UniTask.WaitUntil(_coin, coin => coin.LastReward);
-            _animator.SetFloat("BurstSpeed", 0.0F);
-            _reward = GetReward(_coin.LastReward);
-            ServiceLocator.Get<IRewardsService>().Set(_coin.LastReward.ID);
+            await _motionHandle;
             onComplete?.Invoke();
+        }
+
+        private RewardConfig GetConfigWithID(String id)
+        {
+            return _ids.Find(config => config.ID == id);
+        }
+
+        private Single GetRemainingSeconds(RewardConfig rewardConfig, Single timeOffset)
+        {
+            var currentTime = timeOffset + (_burstAnimationClip.length * (_animator.GetCurrentAnimatorStateInfo(0).normalizedTime % 1.0F));
+            var targetTime = 0.0F;
+
+            foreach (var animationEvent in _burstAnimationClip.events)
+            {
+                if (animationEvent.objectReferenceParameter == rewardConfig)
+                {
+                    targetTime = animationEvent.time;
+                    break;
+                }
+            }
+
+            if (targetTime < currentTime)
+            {
+                return targetTime + (_burstAnimationClip.length - currentTime);
+            }
+
+            return targetTime - currentTime;
         }
 
         private GameObject GetReward(RewardConfig rewardConfig)
@@ -130,6 +178,7 @@ namespace Gameplay
 
         public async void GiveRewards()
         {
+            ServiceLocator.Get<IUIViewService>().Get<CapsuleUIView>().ShowGiveReward(_rewardTargetID);
             await LMotion.Create(0.0F, 1.0F, 0.5F).Bind(progress => _animator.SetFloat(_openProgressParameter, progress));
 
             _createdReward = Instantiate(_reward);

@@ -2,7 +2,6 @@
 using Data.Game;
 using Services.Data.Core;
 using Services.Gameplay.StateMachine.States.Core;
-using Services.Rewards.Core;
 using Services.UIView.Core;
 using UI.Views.Capsule;
 using UnityEngine;
@@ -27,8 +26,6 @@ namespace Services.Gameplay.StateMachine.States
             base.Enter();
 
             _inactiveDuration = 0.0F;
-            var randomID = ServiceLocator.Get<IRewardsService>().RandomRewardID();
-            ServiceLocator.Get<IUIViewService>().Get<CapsuleUIView>().ShowGiveReward(randomID);
             _gameplayService.Capsule.GiveRewards();
         }
 
