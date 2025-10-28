@@ -10171,7 +10171,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _animator: {fileID: 52445664}
   _speed: 450
-  _rotationCenter: {fileID: 52445663}
+  _rotationCenter: {fileID: 2121190028}
+  _capsuleRotationCenter: {fileID: 52445663}
   _reward: {fileID: 9027748565215300258}
   _targetTransform: {fileID: 1939808876}
   _splineContainer: {fileID: 1218105188}

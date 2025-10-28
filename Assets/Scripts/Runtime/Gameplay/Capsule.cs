@@ -18,7 +18,11 @@ namespace Gameplay
         [SerializeField]
         private Single _speed = 2.0F;
         [SerializeField]
+        private Single _capsuleSpeed = 450.0F;
+        [SerializeField]
         private Transform _rotationCenter;
+        [SerializeField]
+        private Transform _capsuleRotationCenter;
         [SerializeField]
         private GameObject _reward;
         [SerializeField]
@@ -57,7 +61,11 @@ namespace Gameplay
             _motionHandle = LMotion.Create(0.0F, 1.0F, 1.0F)
                 .WithLoops(-1, LoopType.Incremental)
                 .WithEase(Ease.OutSine)
-                .Bind(progress => _rotationCenter.RotateAround(_rotationCenter.position, _rotationCenter.up, Mathf.Min(1.0F, progress) * Time.deltaTime * _speed));
+                .Bind(progress =>
+                {
+                    _rotationCenter.RotateAround(_rotationCenter.position, _rotationCenter.up, Mathf.Min(1.0F, progress) * Time.deltaTime * _speed);
+                    _capsuleRotationCenter.RotateAround(_capsuleRotationCenter.position, _capsuleRotationCenter.up, Mathf.Min(1.0F, progress) * Time.deltaTime * _capsuleSpeed);
+                });
         }
 
         public void Stop(Single duration, Action onComplete)
@@ -70,7 +78,11 @@ namespace Gameplay
             _motionHandle = LMotion.Create(1.0F, 0.0F, duration)
                 .WithOnComplete(onComplete)
                 .WithEase(Ease.OutSine)
-                .Bind(progress => _rotationCenter.transform.RotateAround(_rotationCenter.transform.position, _rotationCenter.transform.up, progress * Time.deltaTime * _speed));
+                .Bind(progress =>
+                {
+                    _rotationCenter.transform.RotateAround(_rotationCenter.transform.position, _rotationCenter.transform.up, progress * Time.deltaTime * _speed);
+                    _capsuleRotationCenter.transform.RotateAround(_capsuleRotationCenter.transform.position, _capsuleRotationCenter.transform.up, progress * Time.deltaTime * _capsuleSpeed);
+                });
         }
 
         public void ShowRewards()
