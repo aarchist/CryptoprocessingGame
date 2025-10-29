@@ -1,8 +1,6 @@
 ﻿using System;
 using Services.Data.Core;
 using UnityEngine;
-using UnityEngine.Serialization;
-using Object = System.Object;
 
 namespace Data.Game
 {
@@ -19,6 +17,8 @@ namespace Data.Game
         private Int32 _attemptsCount = 3;
         [SerializeField]
         private Int32 _loseWeight = 1050;
+        [SerializeField]
+        private Int32 _spinSpeed = 250;
 
         private Boolean _changed;
 
@@ -78,6 +78,16 @@ namespace Data.Game
             }
         }
 
+        public Int32 SpinSpeed
+        {
+            get => _spinSpeed;
+            set
+            {
+                _spinSpeed = value;
+                _changed = true;
+            }
+        }
+
         protected override void LoadChanges(IData other)
         {
             if (other is not GameData gameData)
@@ -90,6 +100,7 @@ namespace Data.Game
             _attemptsCount = gameData._attemptsCount;
             _capsuleStopDuration = gameData._capsuleStopDuration;
             _loseWeight = gameData._loseWeight;
+            _spinSpeed = gameData._spinSpeed;
             _changed = false;
         }
     }

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using Data.Game;
 using LitMotion;
 using ScriptableObjects;
 using Services;
 using Services.Audio;
 using Services.Audio.Core;
+using Services.Data.Core;
 using Services.Rewards.Core;
 using Services.UIView.Core;
 using UI.Views.Capsule;
@@ -23,10 +25,6 @@ namespace Gameplay
 
         [SerializeField]
         private Animator _animator;
-        [SerializeField]
-        private Single _speed = 2.0F;
-        [SerializeField]
-        private Single _capsuleSpeed = 450.0F;
         [SerializeField]
         private Transform _capsuleRotationCenter;
         [SerializeField]
@@ -55,9 +53,11 @@ namespace Gameplay
         private Vignette _vignette;
         private GameObject _reward;
         private String _rewardTargetID;
+        private GameData _gameData;
 
         private void Awake()
         {
+            _gameData = ServiceLocator.Get<IDataService>().Get<GameData>();
             if (_volume.profile.TryGet<DepthOfField>(out var depthOfField))
             {
                 _depthOfField = depthOfField;
@@ -103,6 +103,10 @@ namespace Gameplay
             _animator.Play("BurstState");
             _rotatedAngle = 0.0F;
             var loopsCount = 0;
+            if (_motionHandle.IsActive())
+            {
+                _motionHandle.Cancel();
+            }
             _motionHandle = LMotion.Create(0.0F, 1.0F, 1.0F)
                 .WithLoops(-1, LoopType.Incremental)
                 .WithEase(Ease.OutSine)
@@ -110,7 +114,7 @@ namespace Gameplay
                 {
                     progress = Mathf.Min(progress, 1.0F);
                     _animator.SetFloat("BurstSpeed", progress);
-                    var angle = _capsuleSpeed * progress * Time.deltaTime;
+                    var angle = _gameData.SpinSpeed * progress * Time.deltaTime;
                     _rotatedAngle += angle;
                     if (Mathf.Floor(_rotatedAngle / 360.0F) > loopsCount)
                     {
@@ -131,16 +135,17 @@ namespace Gameplay
 
             _rewardTargetID = ServiceLocator.Get<IRewardsService>().RandomRewardID();
             var config = GetConfigWithID(_rewardTargetID);
+            minDuration *= 0.5F;
             var remainingSeconds = (minDuration + GetRemainingSeconds(config, minDuration)) * 2.0F;
             _reward = GetReward(config);
             LMotion.Create(1.0F, 0.0F, remainingSeconds)
                 .Bind(progress => _animator.SetFloat("BurstSpeed", progress));
 
-            var speed = _capsuleSpeed / 2;
+            var speed = _gameData.SpinSpeed / 2;
             var startRotation = _capsuleRotationCenter.rotation;
             var extraRotation = Mathf.Floor((remainingSeconds * speed) / 360.0F) * 360.0F;
             var remainingAngle = 360.0F - (_rotatedAngle % 360.0F);
-            var loopsCount = Mathf.Floor(_rotatedAngle / 360.0F); 
+            var loopsCount = Mathf.Floor(_rotatedAngle / 360.0F);
             _motionHandle = LMotion.Create(0.0F, extraRotation + remainingAngle, (remainingSeconds + (remainingAngle / speed)))
                 .WithEase(Ease.OutCubic)
                 .Bind(angle =>
@@ -185,7 +190,7 @@ namespace Gameplay
 
             if (targetTime < currentTime)
             {
-                return targetTime + (_burstAnimationClip.length - currentTime);
+                return targetTime + (_burstAnimationClip.length - (currentTime % _burstAnimationClip.length));
             }
 
             return targetTime - currentTime;
@@ -213,6 +218,14 @@ namespace Gameplay
             await LMotion.Create(0.0F, 1.0F, 0.5F).Bind(progress => _animator.SetFloat(_openProgressParameter, progress));
 
             _createdReward = Instantiate(_reward);
+            if (_reward == _lossGameObject)
+            {
+                foreach (var child in _createdReward.GetComponentsInChildren<Renderer>())
+                {
+                    child.gameObject.layer = 3;
+                }
+            }
+
             var createdReward = _createdReward;
             _createdReward.transform.localScale = Vector3.one * 5.0F;
             var startRotation = createdReward.transform.rotation;

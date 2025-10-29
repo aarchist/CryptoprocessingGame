@@ -18,6 +18,8 @@ namespace UI.Views.Admin.Options
         [SerializeField]
         private Int32PropertyUIView _capsuleStopDurationProperty;
         [SerializeField]
+        private Int32PropertyUIView _rotationSpeedProperty;
+        [SerializeField]
         private Int32PropertyUIView _inactiveDurationProperty;
         [SerializeField]
         private Int32PropertyUIView _attemptsCountProperty;
@@ -41,6 +43,7 @@ namespace UI.Views.Admin.Options
             var dataService = ServiceLocator.Get<IDataService>();
             _gameData = dataService.Get<GameData>();
             _capsuleStopDurationProperty.Setup(() => _gameData.CapsuleStopDuration, duration => _gameData.CapsuleStopDuration = duration);
+            _rotationSpeedProperty.Setup(() => _gameData.SpinSpeed, duration => _gameData.SpinSpeed = duration);
             _inactiveDurationProperty.Setup(() => _gameData.InactiveSeconds, duration => _gameData.InactiveSeconds = duration);
             _keyCodePropertyUIView.Setup(() => _gameData.GameplayButtonKey, keyCode => _gameData.GameplayButtonKey = keyCode);
             _attemptsCountProperty.Setup(() => _gameData.AttemptsCount, count => _gameData.AttemptsCount = count);
@@ -97,6 +100,7 @@ namespace UI.Views.Admin.Options
             _inactiveDurationProperty.Actualize();
             _attemptsCountProperty.Actualize();
             _keyCodePropertyUIView.Actualize();
+            _rotationSpeedProperty.Actualize();
             _lossWeightProperty.Actualize();
         }
     }

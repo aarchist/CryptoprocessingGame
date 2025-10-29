@@ -20,7 +20,7 @@ namespace UI.Views.Capsule
         [SerializeField]
         private RectTransform _attemptsContent;
         [SerializeField]
-        private Image _attemptPrefab;
+        private GameObject _attemptPrefab;
 
         private UIViewBehaviour _showedUIView;
 
@@ -30,7 +30,7 @@ namespace UI.Views.Capsule
             {
                 while (_attemptsImages.Count < value)
                 {
-                    _attemptsImages.Add(Instantiate(_attemptPrefab, _attemptsContent));
+                    _attemptsImages.Add(Instantiate(_attemptPrefab, _attemptsContent).GetComponentInChildren<Image>());
                 }
 
                 for (var index = 0; index < _attemptsImages.Count; index++)

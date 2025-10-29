@@ -19,7 +19,7 @@ namespace UI.Views.Capsule.Subviews
             if (rewardID == null)
             {
                 _headerTextMeshProUGUI.text = "YOU LOSE!";
-                _rewardNameTextMeshProUGUI.text = "";
+                _rewardNameTextMeshProUGUI.text = "Nothing";
                 return this;
             }
             var rewardConfig = ServiceLocator.Get<IConfigService>()[rewardID];
