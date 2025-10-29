@@ -14,6 +14,7 @@ namespace Services.Gameplay.StateMachine.States
         private readonly GameplayService _gameplayService;
         private readonly GameData _gameData;
         private readonly Capsule _capsule;
+        private Boolean _spinStarted;
         private Boolean _stopping;
 
         public SpinCapsuleGameState(GameplayService gameplayService) : base(gameplayService)
@@ -26,17 +27,18 @@ namespace Services.Gameplay.StateMachine.States
         public override void Enter()
         {
             base.Enter();
+            _spinStarted = false;
             _stopping = false;
             _gameplayService.AttemptsCount--;
             ServiceLocator.Get<IUIViewService>().Get<CapsuleUIView>().ShowTapButton();
-            _capsule.Spin();
+            _capsule.Spin(() => _spinStarted = true);
         }
 
         public override void Update()
         {
             base.Update();
 
-            if (_stopping || !Input.GetKeyDown(_gameData.GameplayButtonKey))
+            if ((!_spinStarted) || _stopping || (!Input.GetKeyDown(_gameData.GameplayButtonKey)))
             {
                 return;
             }

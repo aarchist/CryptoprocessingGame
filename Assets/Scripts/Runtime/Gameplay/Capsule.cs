@@ -20,7 +20,10 @@ namespace Gameplay
 {
     public sealed class Capsule : MonoBehaviour
     {
+        private const Single OpenCapsuleSeconds = 0.75F;
         private static readonly Int32 _openProgressParameter = Animator.StringToHash("OpenProgress");
+        private static readonly Int32 _burstSpeed = Animator.StringToHash("BurstSpeed");
+        private MotionHandle _openCapsuleMotionHandle;
         private MotionHandle _motionHandle;
 
         [SerializeField]
@@ -47,6 +50,10 @@ namespace Gameplay
         private Coin _coin;
         [SerializeField]
         private AnimationClip _burstAnimationClip;
+        [SerializeField]
+        private Single _anglePerAudioFXLoop = 360.0F;
+        [SerializeField] [Range(0.0F, 360.0F)]
+        private Single _anglePerAudioFXLoopOffset = 45.0F;
 
         private GameObject _createdReward;
         private DepthOfField _depthOfField;
@@ -75,48 +82,49 @@ namespace Gameplay
             var reward = _createdReward;
             if (reward)
             {
+                _createdReward = null;
                 LMotion.Create(reward.transform.localScale, Vector3.zero, 0.25F)
                     .WithEase(Ease.InOutSine)
                     .WithOnComplete(() => Destroy(reward))
                     .Bind(scale => reward.transform.localScale = scale);
-                _createdReward = null;
 
-                LMotion.Create(0.0F, 1.0F, 1.0F).WithOnComplete(() =>
-                {
-                    _depthOfField.active = false;
-                    _vignette.active = false;
-                }).Bind(progress =>
-                {
-                    _depthOfField.focusDistance.value = Mathf.Lerp(0.4F, 10.0F, progress);
-                    _vignette.intensity.value = 1.0F - progress;
-                });
+                LMotion.Create(0.0F, 1.0F, 1.0F)
+                    .WithOnComplete(() =>
+                    {
+                        _depthOfField.active = false;
+                        _vignette.active = false;
+                    })
+                    .Bind(progress =>
+                    {
+                        _depthOfField.focusDistance.value = Mathf.Lerp(0.4F, 10.0F, progress);
+                        _vignette.intensity.value = 1.0F - progress;
+                    });
             }
         }
 
         private Single _rotatedAngle;
 
-        public void Spin()
+        public async void Spin(Action onSpinStarted)
         {
             ServiceLocator.Get<IAudioService>().PlayAudioFX(AudioFX.Spin);
             ClearReward();
 
-            _animator.Play("BurstState");
+            await _openCapsuleMotionHandle;
+
+            _animator.Play("BurstState", 0);
             _rotatedAngle = 0.0F;
             var loopsCount = 0;
-            if (_motionHandle.IsActive())
-            {
-                _motionHandle.Cancel();
-            }
+            _motionHandle.TryCancel();
             _motionHandle = LMotion.Create(0.0F, 1.0F, 1.0F)
                 .WithLoops(-1, LoopType.Incremental)
                 .WithEase(Ease.OutSine)
                 .Bind(progress =>
                 {
                     progress = Mathf.Min(progress, 1.0F);
-                    _animator.SetFloat("BurstSpeed", progress);
+                    _animator.SetFloat(_burstSpeed, progress);
                     var angle = _gameData.SpinSpeed * progress * Time.deltaTime;
                     _rotatedAngle += angle;
-                    if (Mathf.Floor(_rotatedAngle / 360.0F) > loopsCount)
+                    if (Mathf.Floor((_anglePerAudioFXLoopOffset + _rotatedAngle) / _anglePerAudioFXLoop) > loopsCount)
                     {
                         loopsCount++;
                         ServiceLocator.Get<IAudioService>().PlayAudioFX(AudioFX.Spin);
@@ -124,33 +132,31 @@ namespace Gameplay
 
                     _capsuleRotationCenter.RotateAround(_capsuleRotationCenter.position, _capsuleRotationCenter.up, angle);
                 });
+
+            onSpinStarted?.Invoke();
         }
 
         public async void Stop(Single minDuration, Action onComplete)
         {
-            if (_motionHandle.IsActive())
-            {
-                _motionHandle.Cancel();
-            }
-
+            _motionHandle.TryCancel();
             _rewardTargetID = ServiceLocator.Get<IRewardsService>().RandomRewardID();
             var config = GetConfigWithID(_rewardTargetID);
             minDuration *= 0.5F;
             var remainingSeconds = (minDuration + GetRemainingSeconds(config, minDuration)) * 2.0F;
             _reward = GetReward(config);
             LMotion.Create(1.0F, 0.0F, remainingSeconds)
-                .Bind(progress => _animator.SetFloat("BurstSpeed", progress));
+                .Bind(progress => _animator.SetFloat(_burstSpeed, progress));
 
             var speed = _gameData.SpinSpeed / 2;
             var startRotation = _capsuleRotationCenter.rotation;
             var extraRotation = Mathf.Floor((remainingSeconds * speed) / 360.0F) * 360.0F;
             var remainingAngle = 360.0F - (_rotatedAngle % 360.0F);
-            var loopsCount = Mathf.Floor(_rotatedAngle / 360.0F);
+            var loopsCount = Mathf.Floor((_anglePerAudioFXLoopOffset + _rotatedAngle) / _anglePerAudioFXLoop);
             _motionHandle = LMotion.Create(0.0F, extraRotation + remainingAngle, (remainingSeconds + (remainingAngle / speed)))
                 .WithEase(Ease.OutCubic)
                 .Bind(angle =>
                 {
-                    if (Mathf.Floor((angle + _rotatedAngle) / 360.0F) > loopsCount)
+                    if (Mathf.Floor((angle + _rotatedAngle + _anglePerAudioFXLoopOffset) / _anglePerAudioFXLoop) > loopsCount)
                     {
                         loopsCount++;
                         ServiceLocator.Get<IAudioService>().PlayAudioFX(AudioFX.Spin);
@@ -208,16 +214,24 @@ namespace Gameplay
 
         public void ShowRewards()
         {
-            _animator.Play("EmptyState");
+            _animator.Play("EmptyState", 0);
         }
 
         public async void GiveRewards(Action onComplete)
         {
             ServiceLocator.Get<IAudioService>().PlayAudioFX(_rewardTargetID == null ? AudioFX.Lose : AudioFX.Win);
             ServiceLocator.Get<IUIViewService>().Get<CapsuleUIView>().ShowGiveReward(_rewardTargetID);
-            await LMotion.Create(0.0F, 1.0F, 0.5F).Bind(progress => _animator.SetFloat(_openProgressParameter, progress));
 
-            _createdReward = Instantiate(_reward);
+            _createdReward = Instantiate(_reward, _reward.transform.position, _reward.transform.rotation);
+            _animator.Play("EmptyState", 0);
+            _openCapsuleMotionHandle = LMotion.Create(0.0F, 1.0F, OpenCapsuleSeconds)
+                .WithEase(Ease.InOutCubic)
+                .WithLoops(2, LoopType.Flip)
+                .Bind(progress => _animator.SetFloat(_openProgressParameter, progress));
+            await UniTask.WaitForSeconds(OpenCapsuleSeconds * 0.25F);
+
+            _depthOfField.active = true;
+            _vignette.active = true;
             if (_reward == _lossGameObject)
             {
                 foreach (var child in _createdReward.GetComponentsInChildren<Renderer>())
@@ -226,37 +240,35 @@ namespace Gameplay
                 }
             }
 
-            var createdReward = _createdReward;
-            _createdReward.transform.localScale = Vector3.one * 5.0F;
-            var startRotation = createdReward.transform.rotation;
-            _depthOfField.active = true;
-            _vignette.active = true;
-            var seconds = 0.5F;
-            LMotion.Create(0.0F, 1.0F, seconds).WithEase(Ease.OutSine).WithOnComplete(() =>
-            {
-                LMotion.Create(0.0F, 1.0F, 0.5F)
-                    .WithLoops(-1, LoopType.Incremental)
-                    .Bind(progress =>
-                    {
-                        if (!createdReward)
+            var seconds = 1.0F;
+            var reward = _createdReward;
+            var startScale = _createdReward.transform.localScale;
+            var startRotation = _createdReward.transform.rotation;
+            LMotion.Create(0.0F, 1.0F, seconds)
+                .WithEase(Ease.InOutSine)
+                .WithOnComplete(() =>
+                {
+                    LMotion.Create(0.0F, 1.0F, 0.5F)
+                        .WithLoops(-1, LoopType.Incremental)
+                        .Bind(reward, (progress, createdReward) =>
                         {
-                            return;
-                        }
+                            if (!createdReward)
+                            {
+                                return;
+                            }
 
-                        progress = Math.Min(progress, 1.0F);
-                        createdReward.transform.RotateAround(createdReward.transform.position, Vector3.up, _rewardRotationSpeed * progress * Time.deltaTime);
-                    });
-            }).Bind(progress =>
-            {
-                createdReward.transform.rotation = Quaternion.Lerp(startRotation, _targetTransform.rotation, progress);
-                createdReward.transform.position = _splineContainer.EvaluatePosition(progress);
-            });
-
-            LMotion.Create(0.0F, 1.0F, seconds).Bind(progress =>
-            {
-                _depthOfField.focusDistance.value = Mathf.Lerp(10.0F, 0.4F, progress);
-                _vignette.intensity.value = progress;
-            });
+                            progress = Math.Min(progress, 1.0F);
+                            createdReward.transform.RotateAround(createdReward.transform.position, Vector3.up, _rewardRotationSpeed * progress * Time.deltaTime);
+                        });
+                })
+                .Bind(_createdReward, (progress, createdReward) =>
+                {
+                    _depthOfField.focusDistance.value = Mathf.Lerp(10.0F, 0.4F, progress);
+                    _vignette.intensity.value = progress;
+                    createdReward.transform.position = _splineContainer.EvaluatePosition(progress);
+                    createdReward.transform.rotation = Quaternion.Lerp(startRotation, _targetTransform.rotation, progress);
+                    createdReward.transform.localScale = Vector3.Lerp(startScale, _targetTransform.localScale, progress);
+                });
 
             await UniTask.WaitForSeconds(seconds);
             onComplete?.Invoke();

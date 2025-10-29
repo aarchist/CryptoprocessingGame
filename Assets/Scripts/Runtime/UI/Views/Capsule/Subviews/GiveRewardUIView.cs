@@ -18,13 +18,13 @@ namespace UI.Views.Capsule.Subviews
         {
             if (rewardID == null)
             {
-                _headerTextMeshProUGUI.text = "YOU LOSE!";
+                _headerTextMeshProUGUI.text = "Try Again!";
                 _rewardNameTextMeshProUGUI.text = "Nothing";
                 return this;
             }
             var rewardConfig = ServiceLocator.Get<IConfigService>()[rewardID];
-            _headerTextMeshProUGUI.text = "YOUR REWARD!";
-            _rewardNameTextMeshProUGUI.text = rewardConfig.Name;
+            _headerTextMeshProUGUI.text = "Your reward:";
+            _rewardNameTextMeshProUGUI.text = rewardConfig.Name + '!';
             return this;
         }
     }
