@@ -1,4 +1,6 @@
 using Services;
+using Services.Audio;
+using Services.Audio.Core;
 using Services.Config;
 using Services.Config.Core;
 using Services.Data;
@@ -30,6 +32,8 @@ public sealed class Bootstrapper : MonoBehaviour
     private UIViewService _uiViewService;
     [SerializeField]
     private LoopsService _loopsService;
+    [SerializeField]
+    private AudioService _audioService;
 
     private void Awake()
     {
@@ -43,6 +47,7 @@ public sealed class Bootstrapper : MonoBehaviour
         ServiceLocator.Register<IConfigService>(_configService);
         ServiceLocator.Register<IUIViewService>(_uiViewService);
         ServiceLocator.Register<ILoopsService>(_loopsService);
+        ServiceLocator.Register<IAudioService>(_audioService);
         ServiceLocator.Initialize();
     }
 

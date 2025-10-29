@@ -4,6 +4,8 @@ using Cysharp.Threading.Tasks;
 using LitMotion;
 using ScriptableObjects;
 using Services;
+using Services.Audio;
+using Services.Audio.Core;
 using Services.Rewards.Core;
 using Services.UIView.Core;
 using UI.Views.Capsule;
@@ -95,10 +97,12 @@ namespace Gameplay
 
         public void Spin()
         {
+            ServiceLocator.Get<IAudioService>().PlayAudioFX(AudioFX.Spin);
             ClearReward();
 
             _animator.Play("BurstState");
             _rotatedAngle = 0.0F;
+            var loopsCount = 0;
             _motionHandle = LMotion.Create(0.0F, 1.0F, 1.0F)
                 .WithLoops(-1, LoopType.Incremental)
                 .WithEase(Ease.OutSine)
@@ -108,6 +112,12 @@ namespace Gameplay
                     _animator.SetFloat("BurstSpeed", progress);
                     var angle = _capsuleSpeed * progress * Time.deltaTime;
                     _rotatedAngle += angle;
+                    if (Mathf.Floor(_rotatedAngle / 360.0F) > loopsCount)
+                    {
+                        loopsCount++;
+                        ServiceLocator.Get<IAudioService>().PlayAudioFX(AudioFX.Spin);
+                    }
+
                     _capsuleRotationCenter.RotateAround(_capsuleRotationCenter.position, _capsuleRotationCenter.up, angle);
                 });
         }
@@ -130,10 +140,17 @@ namespace Gameplay
             var startRotation = _capsuleRotationCenter.rotation;
             var extraRotation = Mathf.Floor((remainingSeconds * speed) / 360.0F) * 360.0F;
             var remainingAngle = 360.0F - (_rotatedAngle % 360.0F);
+            var loopsCount = Mathf.Floor(_rotatedAngle / 360.0F); 
             _motionHandle = LMotion.Create(0.0F, extraRotation + remainingAngle, (remainingSeconds + (remainingAngle / speed)))
                 .WithEase(Ease.OutCubic)
                 .Bind(angle =>
                 {
+                    if (Mathf.Floor((angle + _rotatedAngle) / 360.0F) > loopsCount)
+                    {
+                        loopsCount++;
+                        ServiceLocator.Get<IAudioService>().PlayAudioFX(AudioFX.Spin);
+                    }
+
                     _capsuleRotationCenter.rotation = startRotation;
                     _capsuleRotationCenter.transform.RotateAround(_capsuleRotationCenter.transform.position, _capsuleRotationCenter.transform.up, angle);
                 });
@@ -148,6 +165,7 @@ namespace Gameplay
             {
                 return _lossRewardConfig;
             }
+
             return _ids.Find(config => config.ID == id);
         }
 
@@ -179,6 +197,7 @@ namespace Gameplay
             {
                 return _lossGameObject;
             }
+
             return _rewards[_ids.IndexOf(rewardConfig)];
         }
 
@@ -189,6 +208,7 @@ namespace Gameplay
 
         public async void GiveRewards(Action onComplete)
         {
+            ServiceLocator.Get<IAudioService>().PlayAudioFX(_rewardTargetID == null ? AudioFX.Lose : AudioFX.Win);
             ServiceLocator.Get<IUIViewService>().Get<CapsuleUIView>().ShowGiveReward(_rewardTargetID);
             await LMotion.Create(0.0F, 1.0F, 0.5F).Bind(progress => _animator.SetFloat(_openProgressParameter, progress));
 

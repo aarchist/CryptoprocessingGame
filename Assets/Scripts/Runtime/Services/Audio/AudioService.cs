@@ -1,0 +1,38 @@
+using System;
+using Services.Audio.Core;
+using UnityEngine;
+
+namespace Services.Audio
+{
+    public sealed class AudioService : MonoBehaviour, IAudioService
+    {
+        [SerializeField]
+        private AudioSource _audioSource;
+        [SerializeField]
+        private AudioClip _spinAudioClip;
+        [SerializeField]
+        private AudioClip _loseAudioClip;
+        [SerializeField]
+        private AudioClip _winAudioClip;
+
+        public void PlayAudioFX(AudioFX audioFX)
+        {
+            _audioSource.PlayOneShot(Get(audioFX));
+        }
+
+        public void Dispose()
+        {
+        }
+
+        private AudioClip Get(AudioFX audioFX)
+        {
+            return audioFX switch
+            {
+                AudioFX.Spin => _spinAudioClip,
+                AudioFX.Lose => _loseAudioClip,
+                AudioFX.Win => _winAudioClip,
+                _ => throw new ArgumentOutOfRangeException(nameof(audioFX), audioFX, null)
+            };
+        }
+    }
+}
