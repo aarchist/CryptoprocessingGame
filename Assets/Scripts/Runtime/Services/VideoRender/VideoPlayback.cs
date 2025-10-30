@@ -99,7 +99,6 @@ namespace Services.VideoRender
             videoPlayer.aspectRatio = VideoAspectRatio.FitInside;
             videoPlayer.source = VideoSource.Url;
             videoPlayer.playOnAwake = false;
-            videoPlayer.isLooping = true;
             return videoPlayer;
         }
     }

@@ -1,15 +1,20 @@
 using System;
 using Services.Audio.Core;
 using UnityEngine;
+using Object = System.Object;
 
 namespace Services.Audio
 {
     public sealed class AudioService : MonoBehaviour, IAudioService
     {
         [SerializeField]
+        private AudioClip _coinAnimationFXAudioClip;
+        [SerializeField]
         private AudioSource _coinFXAudioSource;
         [SerializeField]
         private AudioSource _spinFXAudioSource;
+        [SerializeField]
+        private AudioClip _showCapsuleAudioClip;
         [SerializeField]
         private AudioSource _audioSource;
         [SerializeField]
@@ -18,8 +23,6 @@ namespace Services.Audio
         private AudioClip _loseAudioClip;
         [SerializeField]
         private AudioClip _winAudioClip;
-        [SerializeField]
-        private AudioClip _coinAnimationFXAudioClip;
 
         public AudioSource SpinFXAudioSource => _spinFXAudioSource;
 
@@ -43,6 +46,7 @@ namespace Services.Audio
         {
             return audioFX switch
             {
+                AudioFX.ShowCapsuleAnimation => _showCapsuleAudioClip,
                 AudioFX.CoinAnimation => _coinAnimationFXAudioClip,
                 AudioFX.Spin => _spinAudioClip,
                 AudioFX.Lose => _loseAudioClip,

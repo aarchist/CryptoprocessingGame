@@ -4605,13 +4605,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f7c03106a7c453b9cd0c82c4c73ff3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _coinAnimationFXAudioClip: {fileID: 8300000, guid: 81b1d8c232ccf594691ab272e75c50a1, type: 3}
   _coinFXAudioSource: {fileID: 762206517}
   _spinFXAudioSource: {fileID: 762206518}
+  _showCapsuleAudioClip: {fileID: 8300000, guid: 5916dbafc25898a4ab122c95f5cea77f, type: 3}
   _audioSource: {fileID: 762206516}
   _spinAudioClip: {fileID: 8300000, guid: 5916dbafc25898a4ab122c95f5cea77f, type: 3}
   _loseAudioClip: {fileID: 8300000, guid: 0416aa3fea04a8c479d9bbdb6d94c458, type: 3}
   _winAudioClip: {fileID: 8300000, guid: e87babeecea39fa4bb068676d494a908, type: 3}
-  _coinAnimationFXAudioClip: {fileID: 8300000, guid: 81b1d8c232ccf594691ab272e75c50a1, type: 3}
 --- !u!82 &762206516
 AudioSource:
   m_ObjectHideFlags: 0
@@ -5763,6 +5764,8 @@ MonoBehaviour:
   _rotateSpeed: 0.3
   _focusDistance: 0.75
   _radius: 0.225
+  _capsuleShowDuration: 0.5
+  _coinsShowDuration: 0.3
 --- !u!1 &980421461
 GameObject:
   m_ObjectHideFlags: 0
