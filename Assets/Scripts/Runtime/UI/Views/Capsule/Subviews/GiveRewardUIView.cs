@@ -18,7 +18,7 @@ namespace UI.Views.Capsule.Subviews
         {
             if (rewardID == null)
             {
-                _headerTextMeshProUGUI.text = "Try Again!";
+                _headerTextMeshProUGUI.text = "Try again!";
                 _rewardNameTextMeshProUGUI.text = "";
                 return this;
             }

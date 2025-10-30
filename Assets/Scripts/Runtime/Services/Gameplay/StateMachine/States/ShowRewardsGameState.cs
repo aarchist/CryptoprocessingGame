@@ -15,6 +15,7 @@ namespace Services.Gameplay.StateMachine.States
     {
         private readonly GameData _gameData;
         private readonly Capsule _capsule;
+        private readonly Startup _startup;
 
         private MotionHandle _motionHandle;
         private Single _inactiveDuration;
@@ -23,12 +24,14 @@ namespace Services.Gameplay.StateMachine.States
         {
             _gameData = ServiceLocator.Get<IDataService>().Get<GameData>();
             _capsule = gameplayService.Capsule;
+            _startup = gameplayService.Startup;
         }
 
         public override void Enter()
         {
             base.Enter();
             ServiceLocator.Get<IUIViewService>().Get<CapsuleUIView>().ShowShowRewards();
+            _startup.ShowRewards();
             _inactiveDuration = 0.0F;
             _capsule.ShowRewards();
             var source = ServiceLocator.Get<IAudioService>().SpinFXAudioSource;
@@ -59,6 +62,7 @@ namespace Services.Gameplay.StateMachine.States
         public override void Exit()
         {
             base.Exit();
+            _startup.HideRewards();
             ServiceLocator.Get<IUIViewService>().Get<CapsuleUIView>().Clear();
         }
     }

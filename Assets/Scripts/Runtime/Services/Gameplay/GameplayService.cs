@@ -14,6 +14,8 @@ namespace Services.Gameplay
     {
         [SerializeField]
         private Capsule _capsule;
+        [SerializeField]
+        private Startup _startup;
 
         private Dictionary<Type, GameState> _availableStates;
         private IGameState _activeState = IGameState.Dummy;
@@ -22,6 +24,8 @@ namespace Services.Gameplay
         public IGameState ActiveState => _activeState;
 
         public Capsule Capsule => _capsule;
+
+        public Startup Startup => _startup;
 
         public Int32 AttemptsCount
         {
