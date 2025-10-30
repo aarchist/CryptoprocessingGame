@@ -7,6 +7,10 @@ namespace Services.Audio
     public sealed class AudioService : MonoBehaviour, IAudioService
     {
         [SerializeField]
+        private AudioSource _coinFXAudioSource;
+        [SerializeField]
+        private AudioSource _spinFXAudioSource;
+        [SerializeField]
         private AudioSource _audioSource;
         [SerializeField]
         private AudioClip _spinAudioClip;
@@ -14,6 +18,10 @@ namespace Services.Audio
         private AudioClip _loseAudioClip;
         [SerializeField]
         private AudioClip _winAudioClip;
+
+        public AudioSource SpinFXAudioSource => _spinFXAudioSource;
+
+        public AudioSource CoinFXAudioSource => _coinFXAudioSource;
 
         public void PlayAudioFX(AudioFX audioFX)
         {

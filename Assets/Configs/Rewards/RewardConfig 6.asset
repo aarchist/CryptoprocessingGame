@@ -15,5 +15,5 @@ MonoBehaviour:
   _rewardData:
     _isActive: 1
     _weight: 80
-    _id: stars_coin
+    _id: cleaning_kit
   _name: Cleaning kit

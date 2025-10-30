@@ -15,5 +15,5 @@ MonoBehaviour:
   _rewardData:
     _isActive: 1
     _weight: 20
-    _id: usdt_300_coin
+    _id: usdt_300
   _name: USDT 300

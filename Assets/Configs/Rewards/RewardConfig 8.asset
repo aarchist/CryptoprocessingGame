@@ -15,5 +15,5 @@ MonoBehaviour:
   _rewardData:
     _isActive: 1
     _weight: 20
-    _id: sound_coin
+    _id: branded_speakers
   _name: Branded speakers

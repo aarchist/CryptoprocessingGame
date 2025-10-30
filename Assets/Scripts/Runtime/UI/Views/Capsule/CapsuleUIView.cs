@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using UI.Views.Capsule.Subviews;
 using UI.Views.Core;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace UI.Views.Capsule
 {
     public sealed class CapsuleUIView : UIViewBehaviour
     {
-        private readonly List<Image> _attemptsImages = new();
+        private readonly List<GameObject> _attemptsImages = new();
 
         [SerializeField]
         private ShowRewardsUIView _showRewardsUIView;
@@ -30,12 +29,12 @@ namespace UI.Views.Capsule
             {
                 while (_attemptsImages.Count < value)
                 {
-                    _attemptsImages.Add(Instantiate(_attemptPrefab, _attemptsContent).GetComponentInChildren<Image>());
+                    _attemptsImages.Add(Instantiate(_attemptPrefab, _attemptsContent));
                 }
 
                 for (var index = 0; index < _attemptsImages.Count; index++)
                 {
-                    _attemptsImages[index].enabled = index < value;
+                    _attemptsImages[index].gameObject.SetActive(index < value);
                 }
             }
         }

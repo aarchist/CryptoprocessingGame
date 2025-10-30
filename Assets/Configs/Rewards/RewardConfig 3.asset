@@ -15,5 +15,5 @@ MonoBehaviour:
   _rewardData:
     _isActive: 1
     _weight: 50
-    _id: lipstick_coin
+    _id: laptop_pouch
   _name: Laptop pouch

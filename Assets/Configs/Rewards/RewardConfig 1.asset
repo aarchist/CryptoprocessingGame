@@ -15,5 +15,5 @@ MonoBehaviour:
   _rewardData:
     _isActive: 1
     _weight: 15
-    _id: energy_coin
+    _id: power_bank
   _name: Power bank

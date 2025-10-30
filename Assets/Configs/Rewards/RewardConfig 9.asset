@@ -15,5 +15,5 @@ MonoBehaviour:
   _rewardData:
     _isActive: 1
     _weight: 80
-    _id: magic_coin
+    _id: headphone_cleaning_pen
   _name: Headphone cleaning pen

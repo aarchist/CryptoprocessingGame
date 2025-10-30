@@ -21,6 +21,7 @@ namespace Gameplay
     public sealed class Capsule : MonoBehaviour
     {
         private const Single OpenCapsuleSeconds = 0.75F;
+        private const Single RotationFXVolume = 0.5F;
         private static readonly Int32 _openProgressParameter = Animator.StringToHash("OpenProgress");
         private static readonly Int32 _burstSpeed = Animator.StringToHash("BurstSpeed");
         private MotionHandle _openCapsuleMotionHandle;
@@ -114,6 +115,8 @@ namespace Gameplay
             _animator.Play("BurstState", 0);
             _rotatedAngle = 0.0F;
             var loopsCount = 0;
+            var spinFXAudioSource = ServiceLocator.Get<IAudioService>().SpinFXAudioSource;
+            spinFXAudioSource.Play();
             _motionHandle.TryCancel();
             _motionHandle = LMotion.Create(0.0F, 1.0F, 1.0F)
                 .WithLoops(-1, LoopType.Incremental)
@@ -121,6 +124,7 @@ namespace Gameplay
                 .Bind(progress =>
                 {
                     progress = Mathf.Min(progress, 1.0F);
+                    spinFXAudioSource.volume = progress * RotationFXVolume;
                     _animator.SetFloat(_burstSpeed, progress);
                     var angle = _gameData.SpinSpeed * progress * Time.deltaTime;
                     _rotatedAngle += angle;
@@ -152,7 +156,8 @@ namespace Gameplay
             var extraRotation = Mathf.Floor((remainingSeconds * speed) / 360.0F) * 360.0F;
             var remainingAngle = 360.0F - (_rotatedAngle % 360.0F);
             var loopsCount = Mathf.Floor((_anglePerAudioFXLoopOffset + _rotatedAngle) / _anglePerAudioFXLoop);
-            _motionHandle = LMotion.Create(0.0F, extraRotation + remainingAngle, (remainingSeconds + (remainingAngle / speed)))
+            var seconds = (remainingSeconds + (remainingAngle / speed));
+            _motionHandle = LMotion.Create(0.0F, extraRotation + remainingAngle, seconds)
                 .WithEase(Ease.OutCubic)
                 .Bind(angle =>
                 {
@@ -165,7 +170,10 @@ namespace Gameplay
                     _capsuleRotationCenter.rotation = startRotation;
                     _capsuleRotationCenter.transform.RotateAround(_capsuleRotationCenter.transform.position, _capsuleRotationCenter.transform.up, angle);
                 });
-
+            var spinFXAudioSource = ServiceLocator.Get<IAudioService>().SpinFXAudioSource;
+            LMotion.Create(0.0F, RotationFXVolume, seconds)
+                .WithOnComplete(() => spinFXAudioSource.Stop())
+                .Bind(volume => spinFXAudioSource.volume = volume);
             await _motionHandle;
             onComplete?.Invoke();
         }
@@ -244,10 +252,13 @@ namespace Gameplay
             var reward = _createdReward;
             var startScale = _createdReward.transform.localScale;
             var startRotation = _createdReward.transform.rotation;
+            var coinAudioSource = ServiceLocator.Get<IAudioService>().CoinFXAudioSource;
+            coinAudioSource.Play();
             LMotion.Create(0.0F, 1.0F, seconds)
                 .WithEase(Ease.InOutSine)
                 .WithOnComplete(() =>
                 {
+                    coinAudioSource.Stop();
                     LMotion.Create(0.0F, 1.0F, 0.5F)
                         .WithLoops(-1, LoopType.Incremental)
                         .Bind(reward, (progress, createdReward) =>
@@ -265,6 +276,7 @@ namespace Gameplay
                 {
                     _depthOfField.focusDistance.value = Mathf.Lerp(10.0F, 0.4F, progress);
                     _vignette.intensity.value = progress;
+
                     createdReward.transform.position = _splineContainer.EvaluatePosition(progress);
                     createdReward.transform.rotation = Quaternion.Lerp(startRotation, _targetTransform.rotation, progress);
                     createdReward.transform.localScale = Vector3.Lerp(startScale, _targetTransform.localScale, progress);

@@ -15,5 +15,5 @@ MonoBehaviour:
   _rewardData:
     _isActive: 1
     _weight: 20
-    _id: backpack_coin
+    _id: soft_laptop_backpack
   _name: Soft laptop backpack

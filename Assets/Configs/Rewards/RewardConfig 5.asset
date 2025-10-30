@@ -15,5 +15,5 @@ MonoBehaviour:
   _rewardData:
     _isActive: 1
     _weight: 80
-    _id: keychain_coin
+    _id: leather_keychain
   _name: Leather keychain
