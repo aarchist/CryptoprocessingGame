@@ -1,3 +1,4 @@
+using System;
 using Services.Core;
 using UnityEngine;
 
@@ -8,6 +9,8 @@ namespace Services.Audio.Core
         public AudioSource SpinFXAudioSource { get; }
 
         public AudioSource CoinFXAudioSource { get; }
+
+        public void PlayAudioFX(AudioFX audioFX, Single volume);
 
         public void PlayAudioFX(AudioFX audioFX);
     }

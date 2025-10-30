@@ -25,6 +25,11 @@ namespace Services.Audio
 
         public AudioSource CoinFXAudioSource => _coinFXAudioSource;
 
+        public void PlayAudioFX(AudioFX audioFX, Single volume)
+        {
+            _audioSource.PlayOneShot(Get(audioFX), volume);
+        }
+
         public void PlayAudioFX(AudioFX audioFX)
         {
             _audioSource.PlayOneShot(Get(audioFX));
