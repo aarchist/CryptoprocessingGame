@@ -171,7 +171,7 @@ namespace Gameplay
                     _capsuleRotationCenter.transform.RotateAround(_capsuleRotationCenter.transform.position, _capsuleRotationCenter.transform.up, angle);
                 });
             var spinFXAudioSource = ServiceLocator.Get<IAudioService>().SpinFXAudioSource;
-            LMotion.Create(0.0F, RotationFXVolume, seconds)
+            LMotion.Create(RotationFXVolume, 0.0F, seconds)
                 .WithOnComplete(() => spinFXAudioSource.Stop())
                 .Bind(volume => spinFXAudioSource.volume = volume);
             await _motionHandle;
