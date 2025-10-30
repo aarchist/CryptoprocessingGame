@@ -32,7 +32,7 @@ namespace Services.Gameplay.StateMachine.States
             var source = ServiceLocator.Get<IAudioService>().SpinFXAudioSource;
 
             _motionHandle.TryCancel();
-            _motionHandle = LMotion.Create(1.0F, 0.0F, 0.6F).WithOnComplete(source.Stop).WithOnCancel(source.Stop).Bind(volume => source.volume = volume);
+            _motionHandle = LMotion.Create(1.0F, 0.0F, 0.6F).WithOnComplete(source.Stop).Bind(volume => source.volume = volume);
         }
 
         public override void Update()
@@ -49,6 +49,7 @@ namespace Services.Gameplay.StateMachine.States
         public override void Exit()
         {
             base.Exit();
+            _motionHandle.TryCancel();
             ServiceLocator.Get<IUIViewService>().Get<UploadedVideosUIView>().IsVideoActive = false;
         }
     }

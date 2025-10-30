@@ -1,9 +1,6 @@
 using System;
 using JetBrains.Annotations;
 using ScriptableObjects;
-using Services;
-using Services.Audio;
-using Services.Audio.Core;
 using UnityEngine;
 
 namespace Gameplay
@@ -25,7 +22,6 @@ namespace Gameplay
         [UsedImplicitly]
         public void Hit()
         {
-            ServiceLocator.Get<IAudioService>().PlayAudioFX(AudioFX.CoinAnimation, _volume);
         }
     }
 }

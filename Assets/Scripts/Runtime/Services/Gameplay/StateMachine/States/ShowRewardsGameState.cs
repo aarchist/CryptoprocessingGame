@@ -34,7 +34,7 @@ namespace Services.Gameplay.StateMachine.States
             var source = ServiceLocator.Get<IAudioService>().SpinFXAudioSource;
             source.Play();
             _motionHandle.TryCancel();
-            _motionHandle = LMotion.Create(0.0F, 0.6F, 1.0F).Bind(volume => source.volume = volume);
+            _motionHandle = LMotion.Create(0.0F, 0.6F, 0.9F).Bind(volume => source.volume = volume);
         }
 
         public override void Update()
