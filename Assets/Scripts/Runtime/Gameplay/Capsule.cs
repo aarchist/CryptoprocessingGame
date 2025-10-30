@@ -21,7 +21,7 @@ namespace Gameplay
     public sealed class Capsule : MonoBehaviour
     {
         private const Single OpenCapsuleSeconds = 0.75F;
-        private const Single RotationFXVolume = 0.5F;
+        private const Single RotationFXVolume = 1.0F;
         private static readonly Int32 _openProgressParameter = Animator.StringToHash("OpenProgress");
         private static readonly Int32 _burstSpeed = Animator.StringToHash("BurstSpeed");
         private MotionHandle _openCapsuleMotionHandle;
@@ -253,12 +253,10 @@ namespace Gameplay
             var startScale = _createdReward.transform.localScale;
             var startRotation = _createdReward.transform.rotation;
             var coinAudioSource = ServiceLocator.Get<IAudioService>().CoinFXAudioSource;
-            coinAudioSource.Play();
             LMotion.Create(0.0F, 1.0F, seconds)
                 .WithEase(Ease.InOutSine)
                 .WithOnComplete(() =>
                 {
-                    coinAudioSource.Stop();
                     LMotion.Create(0.0F, 1.0F, 0.5F)
                         .WithLoops(-1, LoopType.Incremental)
                         .Bind(reward, (progress, createdReward) =>

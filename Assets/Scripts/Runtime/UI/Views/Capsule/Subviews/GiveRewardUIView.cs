@@ -19,7 +19,7 @@ namespace UI.Views.Capsule.Subviews
             if (rewardID == null)
             {
                 _headerTextMeshProUGUI.text = "Try Again!";
-                _rewardNameTextMeshProUGUI.text = "Nothing";
+                _rewardNameTextMeshProUGUI.text = "";
                 return this;
             }
             var rewardConfig = ServiceLocator.Get<IConfigService>()[rewardID];
