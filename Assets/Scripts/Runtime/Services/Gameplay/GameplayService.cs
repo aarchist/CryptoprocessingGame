@@ -19,6 +19,8 @@ namespace Services.Gameplay
         private IGameState _activeState = IGameState.Dummy;
         private Int32 _attemptsCount;
 
+        public IGameState ActiveState => _activeState;
+
         public Capsule Capsule => _capsule;
 
         public Int32 AttemptsCount

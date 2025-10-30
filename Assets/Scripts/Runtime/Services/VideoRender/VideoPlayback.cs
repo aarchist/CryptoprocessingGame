@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Video;
 using Object = UnityEngine.Object;
@@ -47,7 +49,6 @@ namespace Services.VideoRender
         public void Stop()
         {
             _videoPlayer.Stop();
-            _renderTexture.Release();
         }
 
         public void Load(String videoPath, Action onComplete = null, Action onError = null)

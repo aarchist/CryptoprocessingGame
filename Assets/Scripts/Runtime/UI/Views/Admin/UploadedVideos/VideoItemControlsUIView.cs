@@ -33,6 +33,7 @@ namespace UI.Views.Admin.UploadedVideos
         [SerializeField]
         private Image _selectionImage;
 
+        private IGameplayService _gameplayService;
         private VideoItemUIView _selectedVideoItemUIView;
         private Next _next;
 
@@ -85,6 +86,11 @@ namespace UI.Views.Admin.UploadedVideos
             set => _playIconImage.sprite = value ? _pauseSprite : _playSprite;
         }
 
+        private void Awake()
+        {
+            _gameplayService = ServiceLocator.Get<IGameplayService>();
+        }
+
         private void OnAddButtonClicked()
         {
             ServiceLocator.Get<IFileSystemService>().ChooseVideoFiles(filePaths =>
@@ -127,7 +133,7 @@ namespace UI.Views.Admin.UploadedVideos
         private void Update()
         {
             var isValid = (_selectedVideoItemUIView) && (!_selectedVideoItemUIView.VideoData.IsInvalid);
-            IsInteractable = isValid;
+            IsInteractable = isValid && _gameplayService.ActiveState is not SpinCapsuleGameState;
             if (!isValid)
             {
                 return;

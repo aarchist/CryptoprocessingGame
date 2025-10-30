@@ -11,15 +11,39 @@ namespace UI.Views.VideoOutput
     {
         private const Single FadeDuration = 0.2F;
 
+        private MotionHandle _displayMotionHandle;
         private MotionHandle _motionHandle;
         [SerializeField]
         private CanvasGroup _canvasGroup;
         [SerializeField]
         private RawImage _videoDisplay;
+        [SerializeField]
+        private RawImage _otherVideoDisplay;
+
+        private RawImage _foregroundDisplay;
+
+        private void Awake()
+        {
+            _foregroundDisplay = _otherVideoDisplay;
+        }
 
         public void Setup(RenderTexture renderTexture)
         {
-            _videoDisplay.texture = renderTexture;
+            _foregroundDisplay = (_foregroundDisplay == _otherVideoDisplay) ? _videoDisplay : _otherVideoDisplay;
+
+            _foregroundDisplay.transform.SetSiblingIndex(1);
+            _foregroundDisplay.texture = renderTexture;
+            _displayMotionHandle.TryCancel();
+            _displayMotionHandle = LMotion.Create(0.0F, 1.0F, 0.25F)
+                .Bind(alpha =>
+                {
+                    var color = _foregroundDisplay.color;
+                    color.a = alpha;
+                    _foregroundDisplay.color = color;
+                    var other = (_foregroundDisplay == _otherVideoDisplay) ? _videoDisplay : _otherVideoDisplay;
+                    color.a = 1.0F - alpha;
+                    other.color = color;
+                });
         }
 
         public override void Show()

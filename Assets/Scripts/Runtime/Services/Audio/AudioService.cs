@@ -18,6 +18,8 @@ namespace Services.Audio
         private AudioClip _loseAudioClip;
         [SerializeField]
         private AudioClip _winAudioClip;
+        [SerializeField]
+        private AudioClip _coinAnimationFXAudioClip;
 
         public AudioSource SpinFXAudioSource => _spinFXAudioSource;
 
@@ -36,6 +38,7 @@ namespace Services.Audio
         {
             return audioFX switch
             {
+                AudioFX.CoinAnimation => _coinAnimationFXAudioClip,
                 AudioFX.Spin => _spinAudioClip,
                 AudioFX.Lose => _loseAudioClip,
                 AudioFX.Win => _winAudioClip,

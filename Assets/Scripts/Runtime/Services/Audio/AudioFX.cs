@@ -5,5 +5,6 @@ namespace Services.Audio
         Spin = 0,
         Lose = 1,
         Win = 2,
+        CoinAnimation
     }
 }

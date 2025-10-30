@@ -1,4 +1,6 @@
 ﻿using Data.Game;
+using LitMotion;
+using Services.Audio.Core;
 using Services.Data.Core;
 using Services.Displays.Service;
 using Services.Gameplay.StateMachine.States.Core;
@@ -19,12 +21,18 @@ namespace Services.Gameplay.StateMachine.States
             _gameData = ServiceLocator.Get<IDataService>().Get<GameData>();
         }
 
+        private MotionHandle _motionHandle;
+
         public override void Enter()
         {
             base.Enter();
 
             ServiceLocator.Get<IDisplaysService>().ActivateSecondDisplayWhenConnected();
             ServiceLocator.Get<IUIViewService>().Get<UploadedVideosUIView>().IsVideoActive = true;
+            var source = ServiceLocator.Get<IAudioService>().SpinFXAudioSource;
+
+            _motionHandle.TryCancel();
+            _motionHandle = LMotion.Create(1.0F, 0.0F, 0.6F).WithOnComplete(source.Stop).WithOnCancel(source.Stop).Bind(volume => source.volume = volume);
         }
 
         public override void Update()
@@ -41,7 +49,6 @@ namespace Services.Gameplay.StateMachine.States
         public override void Exit()
         {
             base.Exit();
-
             ServiceLocator.Get<IUIViewService>().Get<UploadedVideosUIView>().IsVideoActive = false;
         }
     }

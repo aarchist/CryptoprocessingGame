@@ -115,8 +115,7 @@ namespace Gameplay
             _animator.Play("BurstState", 0);
             _rotatedAngle = 0.0F;
             var loopsCount = 0;
-            var spinFXAudioSource = ServiceLocator.Get<IAudioService>().SpinFXAudioSource;
-            spinFXAudioSource.Play();
+         
             _motionHandle.TryCancel();
             _motionHandle = LMotion.Create(0.0F, 1.0F, 1.0F)
                 .WithLoops(-1, LoopType.Incremental)
@@ -124,7 +123,6 @@ namespace Gameplay
                 .Bind(progress =>
                 {
                     progress = Mathf.Min(progress, 1.0F);
-                    spinFXAudioSource.volume = progress * RotationFXVolume;
                     _animator.SetFloat(_burstSpeed, progress);
                     var angle = _gameData.SpinSpeed * progress * Time.deltaTime;
                     _rotatedAngle += angle;
@@ -170,10 +168,6 @@ namespace Gameplay
                     _capsuleRotationCenter.rotation = startRotation;
                     _capsuleRotationCenter.transform.RotateAround(_capsuleRotationCenter.transform.position, _capsuleRotationCenter.transform.up, angle);
                 });
-            var spinFXAudioSource = ServiceLocator.Get<IAudioService>().SpinFXAudioSource;
-            LMotion.Create(RotationFXVolume, 0.0F, seconds)
-                .WithOnComplete(() => spinFXAudioSource.Stop())
-                .Bind(volume => spinFXAudioSource.volume = volume);
             await _motionHandle;
             onComplete?.Invoke();
         }
