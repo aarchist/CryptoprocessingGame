@@ -8,19 +8,29 @@ namespace Services.Audio
     public sealed class AudioService : MonoBehaviour, IAudioService
     {
         [SerializeField]
-        private AudioClip _coinAnimationFXAudioClip;
-        [SerializeField]
         private AudioSource _coinFXAudioSource;
         [SerializeField]
         private AudioSource _spinFXAudioSource;
         [SerializeField]
-        private AudioClip _showCapsuleAudioClip;
-        [SerializeField]
         private AudioSource _audioSource;
+        [SerializeField] [Range(0.0F, 1.0F)]
+        private Single _coinAnimationFXAudioClipVolume = 0.5F;
+        [SerializeField]
+        private AudioClip _coinAnimationFXAudioClip;
+        [SerializeField] [Range(0.0F, 1.0F)]
+        private Single _showCapsuleAudioClipVolume = 0.5F;
+        [SerializeField]
+        private AudioClip _showCapsuleAudioClip;
+        [SerializeField] [Range(0.0F, 1.0F)]
+        private Single _spinAudioClipVolume = 0.5F;
         [SerializeField]
         private AudioClip _spinAudioClip;
+        [SerializeField] [Range(0.0F, 1.0F)]
+        private Single _loseAudioClipVolume = 0.5F;
         [SerializeField]
         private AudioClip _loseAudioClip;
+        [SerializeField] [Range(0.0F, 1.0F)]
+        private Single _winAudioClipVolume = 0.5F;
         [SerializeField]
         private AudioClip _winAudioClip;
 
@@ -35,11 +45,24 @@ namespace Services.Audio
 
         public void PlayAudioFX(AudioFX audioFX)
         {
-            _audioSource.PlayOneShot(Get(audioFX));
+            _audioSource.PlayOneShot(Get(audioFX), GetVolume(audioFX));
         }
 
         public void Dispose()
         {
+        }
+
+        private Single GetVolume(AudioFX audioFX)
+        {
+            return audioFX switch
+            {
+                AudioFX.ShowCapsuleAnimation => _showCapsuleAudioClipVolume,
+                AudioFX.CoinAnimation => _showCapsuleAudioClipVolume,
+                AudioFX.Spin => _showCapsuleAudioClipVolume,
+                AudioFX.Lose => _showCapsuleAudioClipVolume,
+                AudioFX.Win => _showCapsuleAudioClipVolume,
+                _ => throw new ArgumentOutOfRangeException(nameof(audioFX), audioFX, null)
+            };
         }
 
         private AudioClip Get(AudioFX audioFX)
