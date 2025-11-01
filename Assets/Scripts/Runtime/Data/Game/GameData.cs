@@ -16,7 +16,7 @@ namespace Data.Game
         [SerializeField]
         private Int32 _attemptsCount = 3;
         [SerializeField]
-        private Int32 _loseWeight = 1050;
+        internal Int32 _loseWeight = 1050;
         [SerializeField]
         private Int32 _spinSpeed = 250;
 

@@ -486,7 +486,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _inputField: {fileID: 1511826002020399279}
   _backgroundImage: {fileID: 6430031901669941332}
-  _minValue: 1
+  _minValue: 0
 --- !u!114 &6430031901669941332 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3360455928808489418, guid: 29fddd46a4da1564caa98124299c8a14, type: 3}

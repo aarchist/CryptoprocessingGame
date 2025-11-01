@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using LitMotion;
 using Services;
 using Services.Audio;
@@ -13,6 +14,8 @@ namespace Gameplay
     {
         private static readonly Int32 _hideProgress = Animator.StringToHash("HideProgress");
 
+        [SerializeField]
+        private List<RotateCoinBehaviour> _coinBehaviours;
         [SerializeField]
         private Animator _animator;
         [SerializeField]
@@ -48,6 +51,7 @@ namespace Gameplay
 
         public void ShowRewards()
         {
+            _capsuleMotionHandle.TryCancel();
             _depthOfField.active = true;
             _vignette.active = true;
             _animator.Play("HideState");
@@ -62,24 +66,11 @@ namespace Gameplay
                     _depthOfField.focusDistance.value = Mathf.Lerp(3.0F, _focusDistance, progress);
                     _vignette.intensity.value = progress;
 
-                    _rotation += Time.deltaTime * _rotateSpeed;
-
-                    var angle = 360.0F / (transform.childCount - 1);
-                    for (var index = 0; index < transform.childCount; index++)
+                    foreach (var rotateCoinBehaviour in _coinBehaviours)
                     {
-                        var coin = transform.GetChild(index);
+                        var coin = rotateCoinBehaviour.transform;
                         coin.localScale = new Vector3(progress, progress, progress);
-                        if (index == 0)
-                        {
-                            coin.localPosition = Vector3.zero;
-                            coin.transform.RotateAround(coin.transform.position, coin.transform.up, _coinsRotationSpeed * Time.deltaTime);
-                        }
-                        else
-                        {
-                            var radians = _rotation + (angle * index * Mathf.Deg2Rad);
-                            var normalizedPosition = new Vector3(Mathf.Cos(radians), Mathf.Sin(radians), 0.0F);
-                            coin.transform.localPosition = normalizedPosition * _radius;
-                        }
+                        coin.transform.RotateAround(coin.transform.position, coin.transform.up, _coinsRotationSpeed * Time.deltaTime);
                     }
                 });
         }

@@ -39,6 +39,19 @@ namespace Data.Reward
             return _rewards.Any(reward => reward.ID == dataID);
         }
 
+        public RewardData Get(String rewardID)
+        {
+            foreach (var rewardData in _rewards)
+            {
+                if (rewardData.ID == rewardID)
+                {
+                    return rewardData;
+                }
+            }
+
+            return null;
+        }
+
         public void Add(RewardData rewardData)
         {
             _rewards.Add(rewardData);

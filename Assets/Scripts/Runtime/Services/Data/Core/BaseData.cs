@@ -4,7 +4,7 @@ namespace Services.Data.Core
 {
     public abstract class BaseData : IData
     {
-        public event Action Reloaded;
+        public Action Reloaded;
 
         public abstract Boolean IsChanged { get; set; }
 

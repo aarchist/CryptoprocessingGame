@@ -11,6 +11,7 @@ namespace Services.Data
     public sealed class DataService : IDataService
     {
         private readonly Dictionary<Type, IData> _loadedData = new();
+
         private readonly Dictionary<Type, String> _dataPaths = new()
         {
             [typeof(UploadedVideosData)] = "uploaded_videos",
@@ -29,6 +30,13 @@ namespace Services.Data
             var data = Load<TData>();
             _loadedData.Add(type, data);
             return data;
+        }
+
+        public void ChangeSaved<TData>(Action<TData> changeDataAction) where TData : IData, new()
+        {
+            var tempData = Load<TData>();
+            changeDataAction.Invoke(tempData);
+            Save(tempData);
         }
 
         public void Save(IData data)

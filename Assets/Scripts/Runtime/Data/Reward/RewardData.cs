@@ -9,11 +9,11 @@ namespace Data.Reward
         [SerializeField]
         private Boolean _isActive = true;
         [SerializeField]
-        private Int32 _weight = 1;
+        internal Int32 _weight = 1;
         [SerializeField]
         private String _id = "reward_id";
 
-        public event Action Reloaded;
+        public Action Reloaded;
 
         public Boolean IsChanged { get; internal set; }
 
