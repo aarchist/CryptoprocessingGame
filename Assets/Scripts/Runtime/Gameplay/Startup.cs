@@ -66,11 +66,16 @@ namespace Gameplay
                     _depthOfField.focusDistance.value = Mathf.Lerp(3.0F, _focusDistance, progress);
                     _vignette.intensity.value = progress;
 
+                    var scale = Mathf.Lerp(0.0F, 0.525F, progress);
                     foreach (var rotateCoinBehaviour in _coinBehaviours)
                     {
                         var coin = rotateCoinBehaviour.transform;
-                        coin.localScale = new Vector3(progress, progress, progress);
-                        coin.transform.RotateAround(coin.transform.position, coin.transform.up, _coinsRotationSpeed * Time.deltaTime);
+                        coin.localScale = new Vector3(scale, scale, scale);
+                        if (Mathf.Approximately(progress, 1.0F))
+                        {
+                            coin.transform.RotateAround(coin.transform.position, coin.transform.up, _coinsRotationSpeed * Time.deltaTime);
+                            rotateCoinBehaviour.ReturnPosition();
+                        }
                     }
                 });
         }
@@ -94,13 +99,13 @@ namespace Gameplay
                 });
 
             _motionHandle.TryCancel();
-            _motionHandle = LMotion.Create(1.0F, 0.0F, _coinsShowDuration)
+            _motionHandle = LMotion.Create(0.525F, 0.0F, _coinsShowDuration)
                 .WithEase(Ease.OutSine)
-                .Bind(progress =>
+                .Bind(scale =>
                 {
                     for (var index = 0; index < transform.childCount; index++)
                     {
-                        transform.GetChild(index).localScale = new Vector3(progress, progress, progress);
+                        transform.GetChild(index).localScale = new Vector3(scale, scale, scale);
                     }
                 });
         }

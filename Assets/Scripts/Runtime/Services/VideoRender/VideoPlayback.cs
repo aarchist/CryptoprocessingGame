@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Threading;
-using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Video;
 using Object = UnityEngine.Object;
@@ -97,6 +95,7 @@ namespace Services.VideoRender
         {
             var videoPlayer = gameObject.AddComponent<VideoPlayer>();
             videoPlayer.aspectRatio = VideoAspectRatio.FitInside;
+            videoPlayer.skipOnDrop = false;
             videoPlayer.source = VideoSource.Url;
             videoPlayer.playOnAwake = false;
             return videoPlayer;

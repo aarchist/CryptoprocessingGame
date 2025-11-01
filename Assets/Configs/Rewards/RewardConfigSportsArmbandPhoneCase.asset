@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: be66a2fa3b884a3a9e29e4b61a6f9b15, type: 3}
-  m_Name: RewardConfigCleaningKit
+  m_Name: RewardConfigSportsArmbandPhoneCase
   m_EditorClassIdentifier: 
   _rewardData:
     _isActive: 1
-    _weight: 80
-    _id: cleaning_kit
-  _name: Cleaning kit
+    _weight: 20
+    _id: sports_armband_phone_case
+  _name: Sports armband phone case

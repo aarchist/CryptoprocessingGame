@@ -11,15 +11,23 @@ namespace Gameplay
         [SerializeField]
         private TMP_Text _nameTextComponent;
 
-        private void OnEnable()
+        private Vector3 _worldPosition;
+
+        public void ReturnPosition()
         {
-            _nameTextComponent = GetComponentInChildren<TMP_Text>();
-            _nameTextComponent.text = _rewardConfig.Name;
+            _nameTextComponent.transform.rotation = Quaternion.identity;
+            _nameTextComponent.transform.position = _worldPosition;
         }
 
-        private void Update()
+        private void Awake()
         {
-            _nameTextComponent.transform.forward = transform.parent.forward;
+            _nameTextComponent = GetComponentInChildren<TMP_Text>();
+            _worldPosition = _nameTextComponent.transform.position;
+        }
+
+        private void OnEnable()
+        {
+            _nameTextComponent.text = _rewardConfig.Name;
         }
     }
 }
