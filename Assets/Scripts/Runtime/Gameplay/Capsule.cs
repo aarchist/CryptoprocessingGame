@@ -56,6 +56,7 @@ namespace Gameplay
         [SerializeField] [Range(0.0F, 360.0F)]
         private Single _anglePerAudioFXLoopOffset = 45.0F;
 
+        private Quaternion _initialCenterRotation;
         private GameObject _createdReward;
         private DepthOfField _depthOfField;
         private Vignette _vignette;
@@ -65,6 +66,7 @@ namespace Gameplay
 
         private void Awake()
         {
+            _initialCenterRotation = _capsuleRotationCenter.rotation;
             _gameData = ServiceLocator.Get<IDataService>().Get<GameData>();
             if (_volume.profile.TryGet<DepthOfField>(out var depthOfField))
             {
@@ -115,8 +117,9 @@ namespace Gameplay
             _animator.Play("BurstState", 0);
             _rotatedAngle = 0.0F;
             var loopsCount = 0;
-         
+
             _motionHandle.TryCancel();
+            _capsuleRotationCenter.transform.rotation = _initialCenterRotation;
             _motionHandle = LMotion.Create(0.0F, 1.0F, 1.0F)
                 .WithLoops(-1, LoopType.Incremental)
                 .WithEase(Ease.OutSine)

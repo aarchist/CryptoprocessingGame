@@ -23,6 +23,8 @@ namespace Services.Gameplay
 
         public IGameState ActiveState => _activeState;
 
+        public Boolean HasAttempts => _attemptsCount > 0;
+
         public Capsule Capsule => _capsule;
 
         public Startup Startup => _startup;
@@ -36,6 +38,7 @@ namespace Services.Gameplay
                 ServiceLocator.Get<IUIViewService>().Get<CapsuleUIView>().ShowedAttempts = _attemptsCount;
             }
         }
+
 
         public void Initialize()
         {
